@@ -12,11 +12,11 @@ let illegalLocations = {
     rightEdge: `${rightEdge}`,
     bottomEdge: `${bottomEdge}`,
     topEdge: `${topEdge}`,
-    playerTwoLocationX: ,
+    // playerTwoLocationX: ,
 
 };
 
-let detectCollision(){
+let detectCollision = function(){
 
 }
 
