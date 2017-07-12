@@ -72,17 +72,20 @@ main #right{
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    position: relative;
+    position: absolute;
+    display: block;
 }
 .p1{
     background: red;
     border: red;
-    left: 0px;
+    left: 133px;
+    /* float: left; */
 }
 .p2{
     background: blue;
     border: blue;
-    left: 560px;
+     left: 693px; 
+    /* float: right; */
 }
 
 
