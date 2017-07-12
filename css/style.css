@@ -74,6 +74,7 @@ main #right{
     border-radius: 50%;
     position: absolute;
     display: block;
+    top: 76px;
 }
 .p1{
     background: red;
@@ -84,7 +85,7 @@ main #right{
 .p2{
     background: blue;
     border: blue;
-     left: 693px; 
+     left: 653px; 
     /* float: right; */
 }
 
