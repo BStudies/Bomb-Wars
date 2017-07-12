@@ -1,0 +1,97 @@
+.clearfix:after{
+    content: '';
+    display: table;
+    clear: both
+}
+
+body{
+    /* width: 80%; */
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+    /* display: inline-block;  */
+}
+
+nav{
+
+}
+
+aside{
+    position: relative;
+}
+
+ main #left{
+    width: 25%;
+    float: left;
+    background: blue;
+} 
+
+ main{
+     width: 33%; 
+     position: relative;
+     float: left;
+     text-align: center;
+} 
+
+
+main #right{
+    width: 25%;
+    float: right;
+    background: pink;
+}
+
+.homepage-bomb-top{
+    background: black;
+    border-radius: 100%;
+    border: 10px solid black;
+    width: 20px;
+    height: 20px;
+}
+.homepage-bomb-body{
+    background: black;
+    border-radius: 100%;
+    border: 10px solid black;
+    width: 100px;
+    height: 100px;
+}
+
+
+
+.gamebox{
+    border-color: black;
+    border-style: solid;
+    border-width: 20px;
+    width: 600px;
+    height: 600px;
+    margin: 0 auto;    
+}
+
+
+
+.player{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: relative;
+}
+.p1{
+    background: red;
+    border: red;
+    left: 0px;
+}
+.p2{
+    background: blue;
+    border: blue;
+    left: 560px;
+}
+
+
+
+
+
+/* .cell{
+    border: 5px dotted black;
+    display: inline-block;
+    width: 53px;
+    height: 53px;
+} */
