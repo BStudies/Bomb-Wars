@@ -5,13 +5,15 @@
 
 let $playerOne = $('.p1');
 let $playerTwo = $('.p2');
+let playerOneBombs = [1,2,3];
+let playerTwoBombs = [1,2,3];
 let playerWidth = parseInt($playerOne.css('width'));
 
 
-let rightEdge = 693;
-let leftEdge = 133;
-let bottomEdge = 636;
-let topEdge = 36;
+let rightEdge = 600;
+let leftEdge = 0;
+let bottomEdge = 600;
+let topEdge = 0;
 let step = playerWidth;
 
 
@@ -169,15 +171,46 @@ let stepUp = function(player){
 
 let dropBomb = function(player){
     //create a div bomb at player location absolute position
-    $('<div>',{
-        position: 'absolute', 
-        left:`${player.css('left')}`, 
-        top: `${player.css('top')}`, 
-        background: 'black',
-        border: '1px solid black',
-        width: `${parseInt(player.css('width'))}`,
-        height: `${parseInt(player.css('width'))}`,
-    });
+    bombID = ''
+    if(player.hasClass('p1') && playerOneBombs.length > 0){
+        console.log($playerOne.css('left'))
+        bombID = `p1b${playerOneBombs.pop()}`;
+        console.log(`dropping bomb ${bombID}`);
+        $('.gamebox').append($('<div>',{
+        width: `${parseInt($playerOne.css('width'))}`,
+        height: `${parseInt($playerOne.css('width'))}`,
+        class: 'bomb clearfix',
+        left: `${parseInt($playerOne.css('left'))+playerWidth}`,
+        top: `${parseInt($playerOne.css('top'))+playerWidth}`,
+        id: `${bombID}`,
+        position: 'relative',
+        }));
+    }
+    else if (player.hasClass('p2') && playerTwoBombs.length > 0){
+        bombID = `p2b${playerTwoBombs.pop()}`;
+        console.log(`dropping bomb ${bombID}`);
+        $('.gamebox').append($('<div>',{
+        width: `${parseInt($playerTwo.css('width'))}`,
+        height: `${parseInt($playerTwo.css('width'))}`,
+        class: 'bomb clearfix',
+        left: `${parseInt($playerTwo.css('left'))}`,
+        top: `${parseInt($playerTwo.css('top'))}`,
+        id: `${bombID}`,
+        position: 'relative',
+        }));
+    }
+
+
+    //this is not occuring ..
+    console.log(`Moving ${bombID}`);
+    // let $bomb = $(`#${bombID}`);
+    // $bomb.css('left',`${parseInt(player.css('left'))+playerWidth}`);
+    // $bomb.css('top',`${parseInt(player.css('top'))+playerWidth}`);
+    let bomb = document.querySelector(`#${bombID}`);
+    bomb.setAttribute('left', `${parseInt($playerTwo.css('left'))}`)
+    bomb.setAttribute('top', `${parseInt($playerTwo.css('top'))}`)
+
+    
 
 }
 
@@ -199,6 +232,9 @@ document.addEventListener('keyup',function (event){
     else if(event.key==='w'){
         stepUp($playerOne);
     }
+    else if(event.key==='x'){
+        dropBomb($playerOne);
+    }
 
     //player two controls
     else if(event.key==='ArrowRight'){
@@ -212,5 +248,8 @@ document.addEventListener('keyup',function (event){
     }
     else if(event.key==='ArrowUp'){
         stepUp($playerTwo);
+    }
+    else if(event.key==='l'){
+        dropBomb($playerTwo);
     }
 });

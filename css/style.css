@@ -34,6 +34,11 @@ aside{
 } 
 
 
+a{
+    color: white;
+}
+
+
 main #right{
     width: 25%;
     float: right;
@@ -63,7 +68,8 @@ main #right{
     border-width: 20px;
     width: 600px;
     height: 600px;
-    margin: 0 auto;    
+    margin: 0 auto;  
+    position: relative;  
 }
 
 
@@ -74,23 +80,30 @@ main #right{
     border-radius: 50%;
     position: absolute;
     display: block;
-    top: 76px;
+    top: 40px;
 }
 .p1{
     background: red;
     border: red;
-    left: 133px;
+    left: 0px;
     /* float: left; */
 }
 .p2{
     background: blue;
     border: blue;
-     left: 653px; 
+    left: 560px; 
     /* float: right; */
 }
 
 
-
+.bomb{
+    background-color: black;
+    border: 1px solid black;
+    border-radius: 50%;
+    position: absolute;
+    /*position: absolute;*/
+    /*display: inline;*/
+}
 
 
 /* .cell{
