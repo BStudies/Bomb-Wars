@@ -68,11 +68,14 @@ li{
 
 
 
+/*Homepage bomb*/
+
 .bomb{
     position: relative;
     top: 150px;
 }
 .spark{
+
 }
 .triangle{
     position: absolute;
@@ -100,7 +103,7 @@ li{
     margin:20px;
     position: absolute;
     top: -29%;
-    animation: burnFuse 15s;
+    animation: burnFuse 10s linear;
 }
 
 @keyframes burnFuse{
@@ -115,24 +118,24 @@ li{
 }
 @keyframes sparkUp{
     0%{
-        width: 0px;
-        height: 0px;
+        width: 0%;
+        height: 0%;
     }
     25%{
-        width: 10px;
-        height: 10px;
+        width: 10%;
+        height: 10%;
     }
     50%{
-        width: 0px;
-        height: 0px;
+        width: 0%;
+        height: 0%;
     }
     75%{
-        width: 10px;
-        height: 10px;
+        width: 10%;
+        height: 10%;
     }
     100%{
-        width: 0px;
-        height: 0px;
+        width: 0%;
+        height: 0%;
     }
 }
 /*fuse light*/
@@ -190,6 +193,32 @@ li{
 }
 
 
+
+
+
+/*Game Bomb*/
+.gameBomb{
+    background-color: black;
+    border: black;
+    border-radius: 50%;
+     position: absolute; 
+    width: 40px;
+    height: 40px;
+     position: inherit; 
+    float: left;    
+    visibility: hidden; 
+    display: inline;
+}
+
+
+
+
+
+
+
+
+
+
 /*uicentric*/
 .colorSelection{
     width: 30px;
@@ -216,7 +245,6 @@ background: green;
 background: purple;
 }
 
-/*doesnt work*/
 .colorSelection:hover{
     border: 1px solid black;
 }
@@ -268,18 +296,7 @@ background: purple;
 }
 
 
-.gameBomb{
-    background-color: black;
-    border: black;
-    border-radius: 50%;
-    /* position: absolute; */
-    width: 40px;
-    height: 40px;
-    /* position: inherit; */
-    float: left;    
-    visibility: hidden; 
-    display: inline;
-}
+
 
 
 

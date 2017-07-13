@@ -72,13 +72,60 @@ initializeIllegalLocation();
 
 
 // 14x14?
+// original
+// let initializeAllBombs = function(){
+//     for(let j = 0; j < playerTwoCol+1; ++j){
+//         for(let k = 0; k < playerTwoCol+1; ++k){
+//             $('.gamebox').append($('<div>',{
+//             class: 'gameBomb clearfix sphere',
+//             id: `r${j}c${k}`,
+//             }));
+//         }
+//     }
+    
+// }
+
+// with animations
 let initializeAllBombs = function(){
     for(let j = 0; j < playerTwoCol+1; ++j){
         for(let k = 0; k < playerTwoCol+1; ++k){
-            $('.gamebox').append($('<div>',{
+            let $bombContainer = $('<div>',{
+                class: 'bomb',
+            });
+            let $ground = $('<div>',{
+                class: 'ground',
+            });
+            let $homepage_bomb = $('<div>',{
+                class: 'homepage-bomb',
+            });
+            let $fuse = $('<div>',{
+                class: 'fuse',
+            });
+            let $spark = $('<div>',{
+                class: 'spark',
+            });
+            let $triangle_upTriangle = $('<div>',{
+                class: 'triangle upTriangle',
+            });
+            let $homepage = $('<div>',{
+                class: 'homepage-bomb',
+            });
+            let $homepage = $('<div>',{
+                class: 'homepage-bomb',
+            });
+            let $homepage = $('<div>',{
+                class: 'homepage-bomb',
+            });
+            
+
+            $('.gamebox').$('<div>',{
+                class: '',
+            }).append($('<div>',{
+                class: 'sphereshadow',
+            }).append($('<div>',{
             class: 'gameBomb clearfix sphere',
             id: `r${j}c${k}`,
-            }));
+            })));
         }
     }
     
@@ -381,40 +428,40 @@ let dropBomb = function(player){
 
 
 
-// or keypress?
+
 document.addEventListener('keyup',function (event){
     console.log(event);
     //player one controls
     if(event.key==='d'){
         stepRight($('.p1'));
     }
-    else if(event.key==='a'){
+    if(event.key==='a'){
         stepLeft($('.p1'));
     }
-    else if(event.key==='s'){
+    if(event.key==='s'){
         stepDown($('.p1'));
     }
-    else if(event.key==='w'){
+    if(event.key==='w'){
         stepUp($('.p1'));
     }
-    else if(event.key==='x'){
+    if(event.key==='x'){
         dropBomb($('.p1'));
     }
 
     //player two controls
-    else if(event.key==='ArrowRight'){
+    if(event.key==='ArrowRight'){
         stepRight($('.p2'));
     }
-    else if(event.key==='ArrowLeft'){
+    if(event.key==='ArrowLeft'){
         stepLeft($('.p2'));
     }
-    else if(event.key==='ArrowDown'){
+    if(event.key==='ArrowDown'){
         stepDown($('.p2'));
     }
-    else if(event.key==='ArrowUp'){
+    if(event.key==='ArrowUp'){
         stepUp($('.p2'));
     }
-    else if(event.key==='l'){
+    if(event.key==='l'){
         dropBomb($('.p2'));
     }
 });
