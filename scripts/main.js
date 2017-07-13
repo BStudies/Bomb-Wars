@@ -76,7 +76,7 @@ let initializeAllBombs = function(){
     for(let j = 0; j < playerTwoCol+1; ++j){
         for(let k = 0; k < playerTwoCol+1; ++k){
             $('.gamebox').append($('<div>',{
-            class: 'bomb clearfix sphere',
+            class: 'gameBomb clearfix sphere',
             id: `r${j}c${k}`,
             }));
         }
@@ -448,10 +448,12 @@ let explode = function(row, col){
     //if player is in blast radius you win
     if(playerTwoRow === row && playerTwoCol === col){
         console.log('Player One Wins!!!')
+        $('#p2').remove();
         timeLimit = 0;
     }
     if(playerOneRow === row && playerOneCol === col){
         console.log('Player Two Wins!!!')
+        $('#p1').remove();
         timeLimit = 0;
     }
 

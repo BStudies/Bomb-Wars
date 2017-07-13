@@ -1,3 +1,6 @@
+/*homepage styles*/
+
+
 .clearfix:after{
     content: '';
     display: table;
@@ -24,6 +27,7 @@ aside{
     width: 25%;
     float: left;
     background: blue;
+    position: relative;
 } 
 
  main{
@@ -31,6 +35,7 @@ aside{
      position: relative;
      float: left;
      text-align: center;
+     position: relative;
 } 
 
 
@@ -45,22 +50,67 @@ main #right{
     background: pink;
 }
 
+
+
+h3{
+    font-family: 'Indie Flower', cursive;
+    font-size: 30px;
+}
+
+
+
+
+.homepage-bomb{
+    position: relative;
+    border-top-left-radius: 20%; 
+}
+
+/*connection to the string*/
 .homepage-bomb-top{
     background: black;
-    border-radius: 100%;
-    border: 10px solid black;
-    width: 20px;
-    height: 20px;
+    border-radius: 50%;
+    /*border: 10px solid black;*/
+    border-width: 3px;
+    width: 50px;
+    height: 50px;
+    position: absolute;
 }
+
 .homepage-bomb-body{
     background: black;
     border-radius: 100%;
-    border: 10px solid black;
-    width: 100px;
-    height: 100px;
+    width: 300px;
+    height: 300px;
+    font-size: 20px;
+}
+
+.homepage-bomb-body:hover{
+    border-color: red;
+    border-width: 4px;
+}
+.startText{
+    /*margin: 0 auto;*/
+    color: white;
+}
+
+/*uicentric*/
+.color{
+    background: red;
+    width: 30px;
+    height: 30px;
+    display: block;
+    margin: 0 auto;
+    position: absolute;
+    border-radius: 20%;
+    left: 45%;
 }
 
 
+
+
+/*===================================================================*/
+
+/*game styles*/
 
 .gamebox{
     border-color: black;
@@ -75,6 +125,7 @@ main #right{
     /*https://cssanimation.rocks/spheres*/
     perspective: 1200px;
     perspective-origin: 50% 50%;
+    display: inline-block;
 }
 
 
@@ -101,7 +152,7 @@ main #right{
 }
 
 
-.bomb{
+.gameBomb{
     background-color: black;
     border: black;
     border-radius: 50%;
@@ -116,11 +167,27 @@ main #right{
 
 
 
+
+
+/*===================================================================*/
+
+
+
+/*3d styles*/
 /*used this to make a sphere https://cssanimation.rocks/spheres/*/
+.ground{
+    /*https://cssanimation.rocks/spheres*/
+    width: 300px;
+    height: 300px;
+    display: inline-block;
+    margin: 20px;
+    perspective: 1200px;
+    perspective-origin: 50% 50%;
+}
 .sphere{
     background: radial-gradient(circle at 100px 100px, grey, #000);
 }
-.sphere .shadow {
+.sphereshadow {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -129,13 +196,9 @@ main #right{
   z-index: -1;
 }
 
-/*uicentric*/
 
 
 
-/* .cell{
-    border: 5px dotted black;
-    display: inline-block;
-    width: 53px;
-    height: 53px;
-} */
+
+
+
