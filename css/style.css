@@ -63,10 +63,41 @@ h3{
 
 
 .homepage-bomb{
-    position: relative;
+    /*position: absolute;*/
 }
 
 
+
+.bomb{
+    position: relative;
+    top: 150px;
+}
+/*based on https://jsfiddle.net/u663m81s/*/
+.fuse{
+    height: 100px;
+    width: 20px;
+    background: transparent;
+    border-radius: 0px 0px 0px 370px/225px;
+    border: solid 5px grey;
+    border-top:none;
+    border-right:none;
+    margin:20px;
+    position: absolute;
+    top: -29%;
+}
+/*fuse light*/
+/*.fuse::before{
+    height:20px;
+    width: 10px;
+    border: 5px solid grey;
+    border-radius: 30px 30px 0px 0px /75px 75px 0px 0px ; 
+    display: block;
+    content: "";
+    border-bottom:none;
+    position:absolute;
+    top: -9px;
+    left: -12px;
+}*/
 /*connection to the string*/
 .homepage-bomb-top{
     background: radial-gradient(circle at 100px 100px, grey, #4E4D4F);
@@ -74,7 +105,6 @@ h3{
     /*border-top-right-radius: 20%;
     border-bottom-left-radius: 20%;*/
     border-bottom-right-radius: 100%;
-
     border-width: 3px;
     width: 50px;
     height: 50px;
@@ -82,24 +112,33 @@ h3{
     left: 8%;
     top: 8%;
 }
-
-
+.startText{
+    /*margin: 0 auto;*/
+    color: white;
+}
 .homepage-bomb-body{
     background: black;
     border-radius: 100%;
     width: 300px;
     height: 300px;
     font-size: 20px;
+    position: absolute;
+    left: 0;
 }
-
 .homepage-bomb-body:hover{
     border-color: red;
     border-width: 4px;
 }
-.startText{
-    /*margin: 0 auto;*/
-    color: white;
+.ground{
+    /*https://cssanimation.rocks/spheres*/
+    width: 300px;
+    height: 300px;
+    display: inline-block;
+    margin: 20px;
+    perspective: 1200px;
+    perspective-origin: 50% 50%;
 }
+
 
 /*uicentric*/
 .color{
@@ -188,15 +227,7 @@ h3{
 
 /*3d styles*/
 /*used this to make a sphere https://cssanimation.rocks/spheres/*/
-.ground{
-    /*https://cssanimation.rocks/spheres*/
-    width: 300px;
-    height: 300px;
-    display: inline-block;
-    margin: 20px;
-    perspective: 1200px;
-    perspective-origin: 50% 50%;
-}
+
 .sphere{
     background: radial-gradient(circle at 100px 100px, grey, #000);
 }
