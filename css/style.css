@@ -70,6 +70,7 @@ main #right{
     height: 600px;
     margin: 0 auto;  
     position: relative;  
+    display: block;
 }
 
 
@@ -80,7 +81,7 @@ main #right{
     border-radius: 50%;
     position: absolute;
     display: block;
-    top: 40px;
+    /* top: 40px; */
 }
 .p1{
     background: red;
@@ -98,12 +99,21 @@ main #right{
 
 .bomb{
     background-color: black;
-    border: 1px solid black;
+    border: black;
     border-radius: 50%;
-    position: absolute;
-    /*position: absolute;*/
-    /*display: inline;*/
+    /* position: absolute; */
+    width: 40px;
+    height: 40px;
+    /* position: inherit; */
+    float: left;    
+    visibility: hidden; 
+    display: inline;
 }
+
+
+
+/*uicentric*/
+
 
 
 /* .cell{
