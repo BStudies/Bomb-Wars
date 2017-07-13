@@ -71,6 +71,10 @@ main #right{
     margin: 0 auto;  
     position: relative;  
     display: block;
+
+    /*https://cssanimation.rocks/spheres*/
+    perspective: 1200px;
+    perspective-origin: 50% 50%;
 }
 
 
@@ -111,6 +115,19 @@ main #right{
 }
 
 
+
+/*used this to make a sphere https://cssanimation.rocks/spheres/*/
+.sphere{
+    background: radial-gradient(circle at 100px 100px, grey, #000);
+}
+.sphere .shadow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1) 40%, rgba(0, 0, 0, 0) 50%);
+  transform: rotateX(90deg) translateZ(-150px);
+  z-index: -1;
+}
 
 /*uicentric*/
 

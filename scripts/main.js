@@ -76,7 +76,7 @@ let initializeAllBombs = function(){
     for(let j = 0; j < playerTwoCol+1; ++j){
         for(let k = 0; k < playerTwoCol+1; ++k){
             $('.gamebox').append($('<div>',{
-            class: 'bomb clearfix',
+            class: 'bomb clearfix sphere',
             id: `r${j}c${k}`,
             }));
         }
@@ -353,9 +353,10 @@ let dropBomb = function(player){
         illegalLocationsXAxis[rcLeft] = rcLeft;
         illegalLocationsYAxis[rcTop] = rcTop;
         playerOneBombs--;
+        timer++;   //to ensure multiple bombs dont line up on the same cooldown time
         playerOneCooldowns[timer + cooldownTime] = rc;
     }
-    else if(player.hasClass('p2') && playerTwoBombs > 0){
+    if(player.hasClass('p2') && playerTwoBombs > 0){
         console.log('test');
         let rc = [playerTwoRow,playerTwoCol]
         let $bombID = `#r${rc[0]}c${rc[1]}`;
@@ -368,6 +369,7 @@ let dropBomb = function(player){
         illegalLocationsXAxis[rcLeft] = rcLeft;
         illegalLocationsYAxis[rcTop] = rcTop;
         playerTwoBombs--;
+        timer++;   //to ensure multiple bombs dont line up on the same cooldown time
         playerTwoCooldowns[timer + cooldownTime] = rc;
     }
     
@@ -446,8 +448,12 @@ let explode = function(row, col){
     //if player is in blast radius you win
     if(playerTwoRow === row && playerTwoCol === col){
         console.log('Player One Wins!!!')
+        timeLimit = 0;
     }
-
+    if(playerOneRow === row && playerOneCol === col){
+        console.log('Player Two Wins!!!')
+        timeLimit = 0;
+    }
 
     setTimeout(function(){$($bombID).css('visibility', 'hidden');},1000);  //delay clear for a second
 
@@ -498,6 +504,10 @@ let refreshCooldowns = function(){
         explode(row+1,col);
         explode(row+2,col);
         explode(row-2,col);
+        explode(row,col-1);
+        explode(row,col+1);
+        explode(row,col-2);
+        explode(row,col+2);
 
         let bombID = `r${row}c${col}`;
         console.log(`Removing ${bombID}'s cooldown`);
@@ -506,11 +516,25 @@ let refreshCooldowns = function(){
         playerOneBombs++;
     }
     if(playerTwoCooldowns[timer]!==undefined){
-        let bombID = `r${playerTwoCooldowns[timer][0]}c${playerTwoCooldowns[timer][1]}`;
+        if(playerTwoCooldowns[timer]!==undefined){
+        let row = playerTwoCooldowns[timer][0];
+        let col = playerTwoCooldowns[timer][1];
+        explode(row,col);
+        explode(row-1,col);
+        explode(row+1,col);
+        explode(row+2,col);
+        explode(row-2,col);
+        explode(row,col-1);
+        explode(row,col+1);
+        explode(row,col-2);
+        explode(row,col+2);
+
+        let bombID = `r${row}c${col}`;
         console.log(`Removing ${bombID}'s cooldown`);
-        $(`#${bombID}`).css('visibility', 'hidden');
+        // $(`#${bombID}`).css('visibility', 'hidden');
         delete playerTwoCooldowns[timer];
         playerTwoBombs++;
+    }
     }
 }
 
