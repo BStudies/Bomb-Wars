@@ -27,7 +27,6 @@ aside{
  main #left{
     width: 25%;
     float: left;
-    background: blue;
     position: relative;
 } 
 
@@ -48,7 +47,6 @@ a{
 main #right{
     width: 25%;
     float: right;
-    background: pink;
 }
 
 h1{
@@ -58,7 +56,9 @@ h1{
 h3{
     font-size: 30px;
 }
+li{
 
+}
 
 
 
@@ -73,7 +73,6 @@ h3{
     top: 150px;
 }
 .spark{
-    /*left: -10%;*/
 }
 .triangle{
     position: absolute;
@@ -85,7 +84,9 @@ h3{
 	border-right: 10px solid transparent;
 	border-bottom: 60px solid red;
     top: -40%;
-    left: 4%;
+    left: -65%;
+    animation: sparkUp 10s;
+
 }
 /*based on https://jsfiddle.net/u663m81s/*/
 .fuse{
@@ -99,6 +100,40 @@ h3{
     margin:20px;
     position: absolute;
     top: -29%;
+    animation: burnFuse 15s;
+}
+
+@keyframes burnFuse{
+    0%{
+        top: -29%;
+        left: 0;
+    }
+    100%{
+        top: 30%;
+        left: 10%;
+    }
+}
+@keyframes sparkUp{
+    0%{
+        width: 0px;
+        height: 0px;
+    }
+    25%{
+        width: 10px;
+        height: 10px;
+    }
+    50%{
+        width: 0px;
+        height: 0px;
+    }
+    75%{
+        width: 10px;
+        height: 10px;
+    }
+    100%{
+        width: 0px;
+        height: 0px;
+    }
 }
 /*fuse light*/
 /*.fuse::before{
@@ -156,20 +191,34 @@ h3{
 
 
 /*uicentric*/
-.color{
-    background: red;
+.colorSelection{
     width: 30px;
     height: 30px;
-    display: block;
+    display: grid;
     margin: 0 auto;
     position: absolute;
     border-radius: 20%;
     left: 45%;
 }
+.blue{
+background: blue;
+}
+.red{
+    background: red;
+}
+.pink{
+background: pink;
+}
+.green{
+background: green;
+}
+.purple{
+background: purple;
+}
+
 /*doesnt work*/
-.color:hover{
-    border-width: 5px;
-    border-color: black;
+.colorSelection:hover{
+    border: 1px solid black;
 }
 
 

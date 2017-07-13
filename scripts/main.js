@@ -381,7 +381,7 @@ let dropBomb = function(player){
 
 
 
-
+// or keypress?
 document.addEventListener('keyup',function (event){
     console.log(event);
     //player one controls
