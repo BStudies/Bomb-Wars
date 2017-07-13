@@ -72,6 +72,21 @@ h3{
     position: relative;
     top: 150px;
 }
+.spark{
+    /*left: -10%;*/
+}
+.triangle{
+    position: absolute;
+    width: 0;
+	height: 0;
+}
+.upTriangle{
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-bottom: 60px solid red;
+    top: -40%;
+    left: 4%;
+}
 /*based on https://jsfiddle.net/u663m81s/*/
 .fuse{
     height: 100px;
