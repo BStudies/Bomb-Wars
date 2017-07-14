@@ -75,12 +75,11 @@ li{
     top: 150px;
 }
 .spark{
-
+    width: 10%;
+    height: 10%;
 }
 .triangle{
     position: absolute;
-    width: 0;
-	height: 0;
 }
 .upTriangle{
 	border-left: 10px solid transparent;
@@ -89,12 +88,11 @@ li{
     top: -40%;
     left: -65%;
     animation: sparkUp 10s;
-
 }
 /*based on https://jsfiddle.net/u663m81s/*/
 .fuse{
-    height: 100px;
-    width: 20px;
+    height: 30%;
+    width: 7%;
     background: transparent;
     border-radius: 0px 0px 0px 370px/225px;
     border: solid 5px grey;
@@ -159,8 +157,8 @@ li{
     border-bottom-left-radius: 20%;*/
     border-bottom-right-radius: 100%;
     border-width: 3px;
-    width: 50px;
-    height: 50px;
+    width: 20%;
+    height: 20%;
     position: absolute;
     left: 8%;
     top: 8%;
@@ -201,13 +199,137 @@ li{
     background-color: black;
     border: black;
     border-radius: 50%;
-     position: absolute; 
+    position: absolute; 
     width: 40px;
     height: 40px;
-     position: inherit; 
+    position: inherit; 
     float: left;    
     visibility: hidden; 
     display: inline;
+}
+
+.game-bomb{
+    position: inherit; 
+    width: 40px;
+    height: 40px;
+    display: inline;
+}
+.game-spark{
+    height: 10%;
+    width: 10%;
+    position: absolute;
+}
+.game-triangle{
+    position: absolute;
+    height: 10%;
+    width: 10%;
+}
+.game-upTriangle{
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-bottom: 60px solid red;
+    top: -40%;
+    left: -65%;
+    animation: game-sparkUp 10s;
+    height: 10%;
+    width: 10%;
+
+}
+/*based on https://jsfiddle.net/u663m81s/*/
+.game-fuse{
+    height: 50%;
+    width: 30%;
+    background: transparent;
+    border-radius: 0px 0px 0px 370px/225px;
+    border: solid 5px grey;
+    border-top:none;
+    border-right:none;
+    /* margin:20px; */
+    position: absolute;
+    top: -29%;
+    animation: game-burnFuse 10s linear;
+}
+
+@keyframes game-burnFuse{
+    0%{
+        top: -29%;
+        left: 0;
+    }
+    100%{
+        top: 30%;
+        left: 10%;
+    }
+}
+@keyframes game-sparkUp{
+    0%{
+        width: 0%;
+        height: 0%;
+    }
+    25%{
+        width: 10%;
+        height: 10%;
+    }
+    50%{
+        width: 0%;
+        height: 0%;
+    }
+    75%{
+        width: 10%;
+        height: 10%;
+    }
+    100%{
+        width: 0%;
+        height: 0%;
+    }
+}
+/*fuse light*/
+/*.fuse::before{
+    height:20px;
+    width: 10px;
+    border: 5px solid grey;
+    border-radius: 30px 30px 0px 0px /75px 75px 0px 0px ; 
+    display: block;
+    content: "";
+    border-bottom:none;
+    position:absolute;
+    top: -9px;
+    left: -12px;
+}*/
+/*connection to the string*/
+.game-homepage-bomb-top{
+    background: radial-gradient(circle at 100px 100px, grey, #4E4D4F);
+    border-top-left-radius: 40%;
+    /*border-top-right-radius: 20%;
+    border-bottom-left-radius: 20%;*/
+    border-bottom-right-radius: 100%;
+    border-width: 3px;
+    width: 20%;
+    height: 20%;
+    position: absolute;
+    left: 8%;
+    top: 8%;
+}
+
+.game-homepage-bomb-body{
+    background: black;
+    border-radius: 100%;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+}
+.game-homepage-bomb-body:hover{
+    border-color: red;
+    border-width: 4px;
+}
+.game-ground{
+    /*https://cssanimation.rocks/spheres*/
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    /* margin: 20px; */
+    perspective: 1200px;
+    perspective-origin: 50% 50%;
 }
 
 
