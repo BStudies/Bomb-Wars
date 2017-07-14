@@ -78,69 +78,69 @@ initializeIllegalLocation();
 
 // 14x14?
 // original
-let initializeAllBombs = function(){
-    for(let j = 0; j < playerTwoCol+1; ++j){
-        for(let k = 0; k < playerTwoCol+1; ++k){
-            $('.gamebox').append($('<div>',{
-            class: 'gameBomb clearfix sphere',
-            id: `r${j}c${k}`,
-            }));
-        }
-    }
-    
-}
-
-// with animations
 // let initializeAllBombs = function(){
 //     for(let j = 0; j < playerTwoCol+1; ++j){
 //         for(let k = 0; k < playerTwoCol+1; ++k){
-//             let $bomb = $('<div>',{
-//                 class: 'game-bomb',
-//                 id: `r${j}c${k}`,
-//                 width: '40px',
-//                 height: '40px'
-//             });
-//             let $ground = $('<div>',{
-//                 class: 'game-ground',
-//             });
-//             let $homepage_bomb = $('<div>',{
-//                 class: 'game-homepage-bomb',
-//             });
-//             let $fuse = $('<div>',{
-//                 class: 'game-fuse',
-//             });
-//             let $spark = $('<div>',{
-//                 class: 'game-spark',
-//             });
-//             let $triangle_upTriangle = $('<div>',{
-//                 class: 'game-triangle game-upTriangle',
-//             });
-//             let $homepage_bomb_top = $('<div>',{
-//                 class: 'game-homepage-bomb-top',
-//             });
-//             let $sphereshadow = $('<span>',{
-//                 class: 'game-sphereshadow',
-//             });
-//             let $homepage_bomb_body_sphere = $('<div>',{
-//                 class: 'game-homepage-bomb-body sphere',
-//             });
-            
-
-//             $('.gamebox').append($bomb);
-//             $bomb.append($ground);
-//             $ground.append($homepage_bomb);
-//             $homepage_bomb.append($fuse);
-//             $fuse.append($spark);
-//             $spark.append($triangle_upTriangle);
-//             $homepage_bomb.append($homepage_bomb_top);
-//             $homepage_bomb.append($sphereshadow);
-//             $homepage_bomb.append($homepage_bomb_body_sphere);
-
-            
+//             $('.gamebox').append($('<div>',{
+//             class: 'gameBomb clearfix sphere',
+//             id: `r${j}c${k}`,
+//             }));
 //         }
 //     }
     
 // }
+
+// with animations
+let initializeAllBombs = function(){
+    for(let j = 0; j < playerTwoCol+1; ++j){
+        for(let k = 0; k < playerTwoCol+1; ++k){
+            let $bomb = $('<div>',{
+                class: 'game-bomb',
+                id: `r${j}c${k}`,
+                width: '40px',
+                height: '40px',
+            });
+            let $ground = $('<div>',{
+                class: 'game-ground',
+            });
+            let $homepage_bomb = $('<div>',{
+                class: 'game-homepage-bomb',
+            });
+            let $fuse = $('<div>',{
+                class: 'game-fuse',
+            });
+            let $spark = $('<div>',{
+                class: 'game-spark',
+            });
+            let $triangle_upTriangle = $('<div>',{
+                class: 'game-triangle game-upTriangle',
+            });
+            let $homepage_bomb_top = $('<div>',{
+                class: 'game-homepage-bomb-top',
+            });
+            let $sphereshadow = $('<span>',{
+                class: 'game-sphereshadow',
+            });
+            let $homepage_bomb_body_sphere = $('<div>',{
+                class: 'game-homepage-bomb-body sphere',
+            });
+            
+
+            $('.gamebox').append($bomb);
+            $bomb.append($ground);
+            $ground.append($homepage_bomb);
+            $homepage_bomb.append($fuse);
+            $fuse.append($spark);
+            $spark.append($triangle_upTriangle);
+            $homepage_bomb.append($homepage_bomb_top);
+            $homepage_bomb.append($sphereshadow);
+            $homepage_bomb.append($homepage_bomb_body_sphere);
+
+            
+        }
+    }
+    
+}
 initializeAllBombs();
 
 
@@ -498,6 +498,47 @@ let stepUp = function(player){
 
 
 // if div is already there
+// let dropBomb = function(player){
+//     //create a div bomb at player location absolute position
+    
+//     bombID = '';
+//     if(player.hasClass('p1') && playerOneBombs> 0){
+//         console.log('test');
+//         let rc = [playerOneRow,playerOneCol]
+//         let $bombID = `#r${rc[0]}c${rc[1]}`;
+//         // document.querySelector(`#${rc}`)
+//         console.log(`#${rc[0]}${rc[1]}`);
+//         $($bombID).css('visibility','visible');
+//         $($bombID).css('translateZ','1');
+//         let rcLeft = playerOneRow*playerWidth;
+//         let rcTop = playerOneRow*playerWidth;
+//         rowObsticles[rc[0]] = rc[0];
+//         colObsticles[rc[1]] = rc[1];
+//         playerOneBombs--;
+//         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
+//         playerOneCooldowns[timer + cooldownTime] = rc;
+//     }
+//     if(player.hasClass('p2') && playerTwoBombs > 0){
+//         console.log('test');
+//         let rc = [playerTwoRow,playerTwoCol]
+//         let $bombID = `#r${rc[0]}c${rc[1]}`;
+//         // document.querySelector(`#${rc}`)
+//         console.log(`#${rc[0]}${rc[1]}`);
+//         $($bombID).css('visibility','visible');
+//         $($bombID).css('translateZ','1');
+//         let rcLeft = playerTwoRow*playerWidth;
+//         let rcTop = playerTwoRow*playerWidth;
+//         rowObsticles[rc[0]] = rc[0];
+//         colObsticles[rc[1]] = rc[1];
+//         playerTwoBombs--;
+//         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
+//         playerTwoCooldowns[timer + cooldownTime] = rc;
+//     }
+    
+
+// }
+
+
 let dropBomb = function(player){
     //create a div bomb at player location absolute position
     
@@ -506,10 +547,46 @@ let dropBomb = function(player){
         console.log('test');
         let rc = [playerOneRow,playerOneCol]
         let $bombID = `#r${rc[0]}c${rc[1]}`;
+        let $bomb = $($bombID);
         // document.querySelector(`#${rc}`)
-        console.log(`#${rc[0]}${rc[1]}`);
-        $($bombID).css('visibility','visible');
-        $($bombID).css('translateZ','1');
+        console.log($bombID);
+        console.log($($bombID).css('visibility'));
+        $bomb.css('visibility','visible');
+        $bomb.css('translateZ','1');
+
+        // $ground = $(`${$bomb} .game-ground`);
+        // $ground.css('visibility', 'visible');
+
+        // $game_homepage_bomb = $(`${$bomb} .game-ground .game-homepage-bomb`);
+        // $game_homepage_bomb.css('visibility', 'visible');
+
+        // $game_fuse = $(`${$bomb} .game-ground .game-homepage-bomb .game-fuse`);
+        // $game_fuse.css('visibility', 'visible');
+
+        // $game_spark = $(`${$bomb} .game-ground .game-homepage-bomb .game-fuse .game-spark`);
+        // $game_spark.css('visibility', 'visible');
+
+        // $game_triangle = $(`${$bomb} .game-ground .game-homepage-bomb .game-fuse .game-spark .game-triangle`);
+        // $game_triangle.css('visibility', 'visible');
+
+        // $game_upTriangle = $(`${$bomb} .game-ground .game-homepage-bomb .game-fuse .game-spark .game-upTriangle`);
+        // $game_upTriangle.css('visibility', 'visible');
+
+
+        // $game_homepage_bomb_top = $(`${$bomb} .game-ground .game-homepage-bomb .game-homepage-bomb-top`);
+        // $game_homepage_bomb_top.css('visibility', 'visible');
+
+        // $game_sphereshadow = $(`${$bomb} .game-ground .game-homepage-bomb .game-sphereshadow`);
+        // $game_sphereshadow.css('visibility', 'visible');
+
+        // $game_homepage_bomb_body = $(`${$bomb} .game-ground .game-homepage-bomb .game-homepage-bomb-body`);
+        // $game_homepage_bomb_body.css('visibility', 'visible');
+
+        // $sphere = $(`${$bomb} .game-ground .game-homepage-bomb .sphere`);
+        // $sphere.css('visibility', 'visible');
+
+        
+
         let rcLeft = playerOneRow*playerWidth;
         let rcTop = playerOneRow*playerWidth;
         rowObsticles[rc[0]] = rc[0];
@@ -537,9 +614,6 @@ let dropBomb = function(player){
     
 
 }
-
-
-
 
 
 
