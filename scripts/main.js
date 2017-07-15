@@ -4,6 +4,9 @@
 
 let playerOneBombs = 3;
 let playerTwoBombs = 3;
+let playerOneBombsInPlay = 0;
+let playerTwoBombsInPlay = 0;
+
 let playerOneCooldowns = {};
 let playerTwoCooldowns = {};
 let cooldownTime = 2;        //2 sec
@@ -134,9 +137,9 @@ let createBomb = function(row, col){
             $homepage_bomb.append($homepage_bomb_top);
             $homepage_bomb.append($sphereshadow);
             $homepage_bomb.append($homepage_bomb_body_sphere);
-            $($bomb).css('left', `${(col)*40}px`);
+            $($bomb).css('left', `${(col-(playerOneBombsInPlay))*40}px`);         //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
             $($bomb).css('top', `${(row-1)*40}px`);
-            console.log(`left: ${(col-1)*40}px`);
+            console.log(`left: ${(col-(playerOneBombsInPlay))*40}px`);            //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
             console.log(`top: ${(row-1)*40}px`);
 }
 
@@ -148,56 +151,56 @@ let moveBomb = function(id, row, col){
 }
 
 // with animations
-let initializeAllBombs = function(){
-    for(let j = 0; j < playerTwoCol+1; ++j){
-        for(let k = 0; k < playerTwoCol+1; ++k){
-            let $bomb = $('<div>',{
-                class: 'game-bomb',
-                id: `r${j}c${k}`,
-                width: '40px',
-                height: '40px',
-            });
-            let $ground = $('<div>',{
-                class: 'game-ground',
-            });
-            let $homepage_bomb = $('<div>',{
-                class: 'game-homepage-bomb',
-            });
-            let $fuse = $('<div>',{
-                class: 'game-fuse',
-            });
-            let $spark = $('<div>',{
-                class: 'game-spark',
-            });
-            let $triangle_upTriangle = $('<div>',{
-                class: 'game-triangle game-upTriangle',
-            });
-            let $homepage_bomb_top = $('<div>',{
-                class: 'game-homepage-bomb-top',
-            });
-            let $sphereshadow = $('<span>',{
-                class: 'game-sphereshadow',
-            });
-            let $homepage_bomb_body_sphere = $('<div>',{
-                class: 'game-homepage-bomb-body sphere',
-            });
+// let initializeAllBombs = function(){
+//     for(let j = 0; j < playerTwoCol+1; ++j){
+//         for(let k = 0; k < playerTwoCol+1; ++k){
+//             let $bomb = $('<div>',{
+//                 class: 'game-bomb',
+//                 id: `r${j}c${k}`,
+//                 width: '40px',
+//                 height: '40px',
+//             });
+//             let $ground = $('<div>',{
+//                 class: 'game-ground',
+//             });
+//             let $homepage_bomb = $('<div>',{
+//                 class: 'game-homepage-bomb',
+//             });
+//             let $fuse = $('<div>',{
+//                 class: 'game-fuse',
+//             });
+//             let $spark = $('<div>',{
+//                 class: 'game-spark',
+//             });
+//             let $triangle_upTriangle = $('<div>',{
+//                 class: 'game-triangle game-upTriangle',
+//             });
+//             let $homepage_bomb_top = $('<div>',{
+//                 class: 'game-homepage-bomb-top',
+//             });
+//             let $sphereshadow = $('<span>',{
+//                 class: 'game-sphereshadow',
+//             });
+//             let $homepage_bomb_body_sphere = $('<div>',{
+//                 class: 'game-homepage-bomb-body sphere',
+//             });
             
 
-            $('.gamebox').append($bomb);
-            $bomb.append($ground);
-            $ground.append($homepage_bomb);
-            $homepage_bomb.append($fuse);
-            $fuse.append($spark);
-            $spark.append($triangle_upTriangle);
-            $homepage_bomb.append($homepage_bomb_top);
-            $homepage_bomb.append($sphereshadow);
-            $homepage_bomb.append($homepage_bomb_body_sphere);
+//             $('.gamebox').append($bomb);
+//             $bomb.append($ground);
+//             $ground.append($homepage_bomb);
+//             $homepage_bomb.append($fuse);
+//             $fuse.append($spark);
+//             $spark.append($triangle_upTriangle);
+//             $homepage_bomb.append($homepage_bomb_top);
+//             $homepage_bomb.append($sphereshadow);
+//             $homepage_bomb.append($homepage_bomb_body_sphere);
 
             
-        }
-    }
+//         }
+//     }
     
-}
+// }
 // initializeAllBombs();
 
 
@@ -640,36 +643,22 @@ let dropBomb = function(player){
     if(player.hasClass('p1') && playerOneBombs> 0){
         let rc = [playerOneRow,playerOneCol]
         createBomb(rc[0],rc[1]);
-
-
-        // let $bombID = `#r${rc[0]}c${rc[1]}`;
-        // // document.querySelector(`#${rc}`)
-        // console.log(`#${rc[0]}${rc[1]}`);
-        // $($bombID).css('visibility','visible');
-        // $($bombID).css('translateZ','1');
-        // let rcLeft = playerOneRow*playerWidth;
-        // let rcTop = playerOneRow*playerWidth;
         rowObsticles[rc[0]] = rc[0];
         colObsticles[rc[1]] = rc[1];
         playerOneBombs--;
         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
         playerOneCooldowns[timer + cooldownTime] = rc;
+        playerOneBombsInPlay++;
     }
-    if(player.hasClass('p2') && playerTwoBombs > 0){
-        console.log('test');
+    if(player.hasClass('p2') && playerTwoBombs> 0){
         let rc = [playerTwoRow,playerTwoCol]
-        let $bombID = `#r${rc[0]}c${rc[1]}`;
-        // document.querySelector(`#${rc}`)
-        console.log(`#${rc[0]}${rc[1]}`);
-        $($bombID).css('visibility','visible');
-        $($bombID).css('translateZ','1');
-        let rcLeft = playerTwoRow*playerWidth;
-        let rcTop = playerTwoRow*playerWidth;
+        createBomb(rc[0],rc[1]);
         rowObsticles[rc[0]] = rc[0];
         colObsticles[rc[1]] = rc[1];
         playerTwoBombs--;
         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
         playerTwoCooldowns[timer + cooldownTime] = rc;
+        playerOneBombsInPlay++;
     }
     
 
@@ -729,20 +718,57 @@ document.addEventListener('keypress',function (event){
 // axis should be a string: x or y
 //row and col should be numbers.
 // allow wraparound?
-let explode = function(row, col){
-    // getPixleOriginFromRowAndCol(row, col);
+//explode for original 
+// let explode = function(row, col){
+//     // getPixleOriginFromRowAndCol(row, col);
     
 
+//     console.log('boom');
+//     delete colObsticles[col];
+//     delete rowObsticles[row];
+//     let $bombID = $(`#r${row}c${col}`);
+//     $bombID.css('background','white');
+//     $bombID.css('visibility','visible');
+//     $bombID.css('color','black');
+//     $bombID.text('x');
+//     $bombID.css('font-size','33px');
+
+//     //if player is in blast radius you win
+//     if(playerTwoRow === row && playerTwoCol === col){
+//         console.log('Player One Wins!!!')
+//         $('#p2').remove();
+        
+//     }
+//     if(playerOneRow === row && playerOneCol === col){
+//         console.log('Player Two Wins!!!')
+//         $('#p1').remove();
+        
+//     }
+
+//     setTimeout(function(){$($bombID).css('visibility', 'hidden');},1000);  //delay clear for a second
+// }
+
+
+// explode for animation
+let explode = function(row, col){
+    
     console.log('boom');
+    console.log(`blowing up r${row}c${col}`);
     delete colObsticles[col];
     delete rowObsticles[row];
-    let $bombID = $(`#r${row}c${col}`);
-    $bombID.css('background','white');
-    $bombID.css('visibility','visible');
-    $bombID.css('color','black');
-    $bombID.text('x');
-    $bombID.css('font-size','33px');
-
+    //create a div for the object and append to the row and col
+    let $explodeCell = $('<div>',{
+        color: 'black',
+        width: '40px',
+        height: '40px',
+        position: 'inherit',
+        display: 'inline',
+        float: 'left',
+    });
+    $explodeCell.css('left', `${(col)*40}px`);
+    $explodeCell.css('top', `${(row-1)*40}px`);
+    $explodeCell.text('x');
+    $('.gamebox').append($explodeCell);
     //if player is in blast radius you win
     if(playerTwoRow === row && playerTwoCol === col){
         console.log('Player One Wins!!!')
@@ -755,29 +781,8 @@ let explode = function(row, col){
         
     }
 
-    setTimeout(function(){$($bombID).css('visibility', 'hidden');},1000);  //delay clear for a second
-
-    // if(axis === 'x'){
-    //     for(let j = row; j > row-2; --row){
-    //         console.log('boom');
-    //         let $bombID = $(`#r${j}c${col}`);
-    //         $bombID.css('background','white');
-    //         $bombID.css('color','black');
-    //         $bombID.text('x');
-    //         $bombID.css('font-size','33px');
-    //     }
-    //     for(let j = row; j < row+2; ++row){
-    //         let $bombID = `#r${j}c${col}`;
-    //         $bombID.css('background','white');
-    //         $bombID.css('color','black');
-    //         $bombID.text('x');
-    //         $bombID.css('font-size','33px');
-    //     }
-    // }
-    
-
+    // setTimeout(function(){$explodeCell.remove();},1000);  //delay clear for a second
 }
-
 
 
 
@@ -800,20 +805,21 @@ let refreshCooldowns = function(){
         let row = playerOneCooldowns[timer][0];
         let col = playerOneCooldowns[timer][1];
         explode(row,col);
-        explode(row-1,col);
-        explode(row+1,col);
-        explode(row+2,col);
-        explode(row-2,col);
-        explode(row,col-1);
-        explode(row,col+1);
-        explode(row,col-2);
-        explode(row,col+2);
+        // explode(row-1,col);
+        // explode(row+1,col);
+        // explode(row+2,col);
+        // explode(row-2,col);
+        // explode(row,col-1);
+        // explode(row,col+1);
+        // explode(row,col-2);
+        // explode(row,col+2);
         $(`#r${row}c${col}`).remove();
         let bombID = `r${row}c${col}`;
         console.log(`Removing ${bombID}'s cooldown`);
         // $(`#${bombID}`).css('visibility', 'hidden');
         delete playerOneCooldowns[timer];
         playerOneBombs++;
+        playerOneBombsInPlay--;
     }
     if(playerTwoCooldowns[timer]!==undefined){
         if(playerTwoCooldowns[timer]!==undefined){
@@ -834,6 +840,7 @@ let refreshCooldowns = function(){
         // $(`#${bombID}`).css('visibility', 'hidden');
         delete playerTwoCooldowns[timer];
         playerTwoBombs++;
+        playerOneBombsInPlay--;
     }
     }
 }
