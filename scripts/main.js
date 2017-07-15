@@ -128,6 +128,7 @@ let createBomb = function(row, col){
             });
             
 
+            // need to add to dom to manipulate location
             $('.gamebox').append($bomb);
             $bomb.append($ground);
             $ground.append($homepage_bomb);
@@ -137,6 +138,10 @@ let createBomb = function(row, col){
             $homepage_bomb.append($homepage_bomb_top);
             $homepage_bomb.append($sphereshadow);
             $homepage_bomb.append($homepage_bomb_body_sphere);
+
+
+
+            // must account for previous gameboard appendings
             $($bomb).css('left', `${(col-(playerOneBombsInPlay))*40}px`);         //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
             $($bomb).css('top', `${(row-1)*40}px`);
             console.log(`left: ${(col-(playerOneBombsInPlay))*40}px`);            //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
@@ -216,7 +221,7 @@ let makeObsticle = function(row,col){
     colObsticles[col] = col
     let index = Math.floor(Math.random()*colors.length-1);
     $('.gamebox').append($('<div>',{
-        id: `obr${row}c${col}`,
+        id: `obsticle${row}c${col}`,
         background: `${colors[index]}`,
         width: `${playerWidth}`,
         height: `${playerWidth}`,
@@ -658,7 +663,7 @@ let dropBomb = function(player){
         playerTwoBombs--;
         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
         playerTwoCooldowns[timer + cooldownTime] = rc;
-        playerOneBombsInPlay++;
+        playerTwoBombsInPlay++;
     }
     
 
@@ -750,7 +755,8 @@ document.addEventListener('keypress',function (event){
 
 
 // explode for animation
-let explode = function(row, col){
+// first is correct, rest is not
+let explode = function(row, col, playerName){
     
     console.log('boom');
     console.log(`blowing up r${row}c${col}`);
@@ -758,18 +764,23 @@ let explode = function(row, col){
     delete rowObsticles[row];
     //create a div for the object and append to the row and col
     let $explodeCell = $('<div>',{
-        color: 'black',
-        width: '40px',
-        height: '40px',
-        position: 'inherit',
-        display: 'inline',
-        float: 'left',
+        id: `explosionr${row}c${col}`,
+        class: 'explosion',
     });
-    $explodeCell.css('left', `${(col)*40}px`);
-    $explodeCell.css('top', `${(row-1)*40}px`);
-    $explodeCell.text('x');
+
+    // need to add to dom to manipulate location
     $('.gamebox').append($explodeCell);
+    $explodeCell = $(`#explosionr${row}c${col}`);
+    $explodeCell.css('left', `${(col)*40}px`);
+    $explodeCell.css('top', `${(row)*40}px`);
+    $explodeCell.text('x');
     //if player is in blast radius you win
+    // if(playerName === 'p1'){
+    //     playerOneBombsInPlay--;
+    // }
+    // else{
+    //     playerTwoBombsInPlay--;
+    // }
     if(playerTwoRow === row && playerTwoCol === col){
         console.log('Player One Wins!!!')
         $('#p2').remove();
@@ -781,7 +792,7 @@ let explode = function(row, col){
         
     }
 
-    // setTimeout(function(){$explodeCell.remove();},1000);  //delay clear for a second
+    setTimeout(function(){$explodeCell.remove();},1000);  //delay clear for a second
 }
 
 
@@ -804,15 +815,15 @@ let refreshCooldowns = function(){
     if(playerOneCooldowns[timer]!==undefined){
         let row = playerOneCooldowns[timer][0];
         let col = playerOneCooldowns[timer][1];
-        explode(row,col);
-        // explode(row-1,col);
-        // explode(row+1,col);
-        // explode(row+2,col);
-        // explode(row-2,col);
-        // explode(row,col-1);
-        // explode(row,col+1);
-        // explode(row,col-2);
-        // explode(row,col+2);
+        explode(row,col,'p1');
+        explode(row-1,col,'p1');
+        explode(row+1,col,'p1');
+        explode(row+2,col,'p1');
+        explode(row-2,col,'p1');
+        explode(row,col-1,'p1');
+        explode(row,col+1,'p1');
+        explode(row,col-2,'p1');
+        explode(row,col+2,'p1');
         $(`#r${row}c${col}`).remove();
         let bombID = `r${row}c${col}`;
         console.log(`Removing ${bombID}'s cooldown`);
@@ -825,22 +836,22 @@ let refreshCooldowns = function(){
         if(playerTwoCooldowns[timer]!==undefined){
         let row = playerTwoCooldowns[timer][0];
         let col = playerTwoCooldowns[timer][1];
-        explode(row,col);
-        explode(row-1,col);
-        explode(row+1,col);
-        explode(row+2,col);
-        explode(row-2,col);
-        explode(row,col-1);
-        explode(row,col+1);
-        explode(row,col-2);
-        explode(row,col+2);
+        explode(row,col,'p2');
+        explode(row-1,col,'p2');
+        explode(row+1,col,'p2');
+        explode(row+2,col,'p2');
+        explode(row-2,col,'p2');
+        explode(row,col-1,'p2');
+        explode(row,col+1,'p2');
+        explode(row,col-2,'p2');
+        explode(row,col+2,'p2');
         $(`#r${row}c${col}`).remove();
         let bombID = `r${row}c${col}`;
         console.log(`Removing ${bombID}'s cooldown`);
         // $(`#${bombID}`).css('visibility', 'hidden');
         delete playerTwoCooldowns[timer];
         playerTwoBombs++;
-        playerOneBombsInPlay--;
+        playerTwoBombsInPlay--;
     }
     }
 }
