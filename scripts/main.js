@@ -153,6 +153,11 @@ let removeObstacle = function(row,col){
         PlayerLocationPairs[`${row},${col}`][0].die();
         if(Object.keys(PlayerLocationPairs).length === 1){
             console.log(`${PlayerLocationPairs[Object.keys(PlayerLocationPairs)[0]][0].name} has won!!!!`);
+            let $winBanner = $('<h3>',{
+                class: 'Win-Banner',
+            });
+            $winBanner.text(`${PlayerLocationPairs[Object.keys(PlayerLocationPairs)[0]][0].name} has won!!!!`);
+            $('h1').append($winBanner);
         }
     }
 }
