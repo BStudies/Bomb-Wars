@@ -446,6 +446,7 @@ background: purple;
 }
 .monster{
     color: teal;
+    border: teal;
 }
 .p1{
     background: red;

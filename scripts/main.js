@@ -6,61 +6,10 @@ let playerOneBombs = 1;
 let playerTwoBombs = 1;
 let playerOneBombsInPlay = 0;
 let playerTwoBombsInPlay = 0;
+let bombs = {};     //example time: thisbomb
 
-
-let monsters = {};
-let players = {};
-// location is a pair of x,y coordinates for the game grid
-let Bomb = function(location){
-    this.locationPair = location
-}
-Bomb.prototype.explode = function(){
-    
-}
-let Player = function(name, location){
-    this.name = name;
-    this.cooldown = {};
-    this.locationPair = location;
-    this.bombsInPlay = 0;
-    this.numberOfBombs = 1;
-}
-Player.prototype.collisionUp = function(){
-    
-}
-Player.prototype.collisionDown = function(){
-    
-}
-Player.prototype.collisionRight = function(){
-    
-}
-Player.prototype.collisionLeft = function(){
-    
-}
-Player.prototype.stepUp = function(){
-
-}
-Player.prototype.stepDown = function(){
-    
-}
-Player.prototype.stepRight = function(){
-    
-}
-Player.prototype.stepLeft = function(){
-    
-}
-Player.prototype.dropBomb = function(){
-    
-}
-
-
-let Obstacle = function(location){
-    this.location = location
-}
-
-let Monster = function(id, rowColPair){
-    this.id = id;
-    this.location = rowColPair;
-}
+let monsters = [];
+let players = [];
 
 let playerOneCooldowns = {};        //get rid of these two and put in player to make npcs use same logic
 let playerTwoCooldowns = {};        //get rid of these two and put in player to make npcs use same logic
@@ -94,6 +43,376 @@ let illegalLocationsYAxis = {};
 
 
 let ObstaclePairs = {};         //example: '3,4': [3,4]
+
+let $gamebox = $('.gamebox');
+
+
+// location is a pair of x,y coordinates for the game grid
+let Bomb = function(location, timeDropped){
+    this.locationPair = location
+    this.explodeTime = timeDropped+2;
+    console.log(`creating bomb(${this.locationPair[0]},${this.locationPair[1]})`);
+    let $bomb = $('<div>',{
+                class: 'game-bomb',
+                id: `bomb(${this.locationPair[0]},${this.locationPair[1]})`,
+                width: '40px',
+                height: '40px',
+            });
+            let $ground = $('<div>',{
+                class: 'game-ground',
+            });
+            let $homepage_bomb = $('<div>',{
+                class: 'game-homepage-bomb',
+            });
+            let $fuse = $('<div>',{
+                class: 'game-fuse',
+            });
+            let $spark = $('<div>',{
+                class: 'game-spark',
+            });
+            let $triangle_upTriangle = $('<div>',{
+                class: 'game-triangle game-upTriangle',
+            });
+            let $homepage_bomb_top = $('<div>',{
+                class: 'game-homepage-bomb-top',
+            });
+            let $sphereshadow = $('<span>',{
+                class: 'game-sphereshadow',
+            });
+            let $homepage_bomb_body_sphere = $('<div>',{
+                class: 'game-homepage-bomb-body sphere',
+            });
+            
+
+            // need to add to dom to manipulate location
+            $('.gamebox').append($bomb);
+            $bomb.append($ground);
+            $ground.append($homepage_bomb);
+            $homepage_bomb.append($fuse);
+            $fuse.append($spark);
+            $spark.append($triangle_upTriangle);
+            $homepage_bomb.append($homepage_bomb_top);
+            $homepage_bomb.append($sphereshadow);
+            $homepage_bomb.append($homepage_bomb_body_sphere);
+            ObstaclePairs[`${this.locationPair[0],this.locationPair[1]}`] = [this.locationPair[0],this.locationPair[1]];
+
+
+            // must account for previous gameboard appendings
+            $($bomb).css('left', `${(this.locationPair[1]-(Object.keys(bombs).length))*40}px`);         //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
+            $($bomb).css('top', `${(this.locationPair[0])*40}px`);
+            console.log(`left: ${(this.locationPair[1]-(Object.keys(bombs).length))*40}px`);            //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
+            console.log(`top: ${(this.locationPair[0])*40}px`);
+            bombs[this.explodeTime] = this;
+}
+Bomb.prototype.explode = function(){
+    console.log('boom');
+    console.log(`blowing up bomb(${this.locationPair[0]},${this.locationPair[1]})`);
+
+    delete ObstaclePairs[this.locationPair[0],this.locationPair[1]];
+    $(`#bomb${this.locationPair[0]},${this.locationPair[1]}`).remove();
+    //create a div for the object and append to the row and col
+    let $explodeCell = $('<div>',{
+        id: `explosion(${this.locationPair[0]}c${this.locationPair[1]})`,
+        class: 'explosion',
+    });
+
+    // destroy obstacles
+    // is destroying more than what is required I wont use this
+    // if(rowObstacles[row] !== undefined && colObstacles[col] !== undefined){
+    //     $(`#obstacler${row}c${col}`).remove();
+    // }
+
+    // need to add to dom to manipulate location
+    $('.gamebox').append($explodeCell);
+    $explodeCell = $(`#explosionr${this.locationPair[0]}c${this.locationPair[1]}`);
+    $explodeCell.css('left', `${(this.locationPair[1])*40}px`);
+    $explodeCell.css('top', `${(this.locationPair[0])*40}px`);
+    $explodeCell.text('x');
+
+
+    // if(playerTwoRow === row && playerTwoCol === col){
+    //     console.log('Player One Wins!!!')
+    //     $('#p2').remove();
+        
+    // }
+    // if(playerOneRow === row && playerOneCol === col){
+    //     console.log('Player Two Wins!!!')
+    //     $('#p1').remove();
+        
+    // }
+
+    setTimeout(function(){$explodeCell.remove();},1000);  //delay clear for a second
+    // bombsInPlay--;
+}
+
+
+
+
+
+
+
+
+//player class
+//========================================================================================
+
+
+
+// dom element should be a css selector
+let Player = function(name, location, color){
+    this.name = name;
+    this.cooldown = {};
+    this.locationPair = location;
+    this.bombsInPlay = 0;
+    this.numberOfBombs = 1;
+
+    $gamebox.append($('<div>',{
+        class: `player clearfix ${name}`,
+        id: `${name}`,
+        style: `background-color: ${color}; border: ${color}`, 
+        border: `${color}`,
+    }));
+    this.domElement = $(`#${name}`);
+    this.domElement.css(`left`,`${location[1]*40}px`);
+    this.domElement.css(`top`,`${location[0]*40}px`);
+
+}
+Player.prototype.collisionUp = function(){
+    if(absoluteIllegalLocationsYAxis[parseInt(this.domElement.css('top'))]!==undefined){
+        console.log(`collision detected from ${this.domElement.css('top')} wall ${absoluteIllegalLocationsYAxis[parseInt(this.domElement.css('top'))]}`)
+        return true;
+    }
+    let newCoordinates = [this.locationPair[0]-1,this.locationPair[1]];
+    if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
+        console.log(`collision detected`)
+        return true;
+    }
+    return false;
+}
+Player.prototype.collisionDown = function(){
+    if(absoluteIllegalLocationsYAxis[parseInt(this.domElement.css('top'))+step]!==undefined){
+        console.log(`collision detected from ${this.domElement.css('top')} wall ${absoluteIllegalLocationsYAxis[parseInt(this.domElement.css('top'))+step]}`)
+        return true;
+    }
+    let newCoordinates = [this.locationPair[0]+1,this.locationPair[1]];
+    if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
+        console.log(`collision detected`)
+        return true;
+    }
+    return false;
+}
+Player.prototype.collisionRight = function(){
+    if(absoluteIllegalLocationsXAxis[parseInt(this.domElement.css('left'))+step]!==undefined){
+        console.log(`collision detected from ${this.domElement.css('left')} wall ${absoluteIllegalLocationsXAxis[parseInt(this.domElement.css('left'))+step]}`)
+        return true;
+    }
+    let newCoordinates = [this.locationPair[0],this.locationPair[1]+1];
+    console.log(newCoordinates);
+    if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
+        console.log(`collision detected`)
+        return true;
+    }
+    return false;
+}
+Player.prototype.collisionLeft = function(){
+    if(absoluteIllegalLocationsXAxis[parseInt(this.domElement.css('left'))]!==undefined){
+        console.log(`collision detected at wall from ${this.domElement.css('left')} ${absoluteIllegalLocationsXAxis[parseInt(this.domElement.css('left'))]}`)
+        return true;
+    }
+    let newCoordinates = [this.locationPair[0],this.locationPair[1]-1];
+    if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
+        console.log(`collision detected`)
+        return true;
+    }
+    return false;
+}
+Player.prototype.stepUp = function(){
+    if(!this.collisionUp()){
+        delete illegalLocationsYAxis[parseInt(this.domElement.css('top'))];
+        this.domElement.css('top',parseInt(this.domElement.css('top'))-step);
+        this.locationPair[0]--;
+        illegalLocationsYAxis[parseInt(this.domElement.css('top'))] = parseInt(this.domElement.css('top'));
+
+    }
+}
+Player.prototype.stepDown = function(){
+    if(!this.collisionDown() ){
+        delete illegalLocationsYAxis[parseInt(this.domElement.css('top'))];
+        this.domElement.css('top',parseInt(this.domElement.css('top'))+step);
+        this.locationPair[0]++;
+        illegalLocationsYAxis[parseInt(this.domElement.css('top'))] = parseInt(this.domElement.css('top'));
+
+    }
+}
+Player.prototype.stepRight = function(){
+    if(!this.collisionRight()){
+        delete illegalLocationsXAxis[parseInt(this.domElement.css('left'))];
+        this.domElement.css('left',parseInt(this.domElement.css('left'))+step);
+        this.locationPair[1]++;
+        illegalLocationsXAxis[parseInt(this.domElement.css('left'))] = parseInt(this.domElement.css('left'));
+    }
+}
+Player.prototype.stepLeft = function(){
+    if(!this.collisionLeft()){
+        delete illegalLocationsXAxis[parseInt(this.domElement.css('left'))];
+
+        this.domElement.css('left',parseInt(this.domElement.css('left'))-step);
+        this.locationPair[1]--;
+        illegalLocationsXAxis[parseInt(this.domElement.css('left'))] = parseInt(this.domElement.css('left'));
+    }
+}
+// Player.prototype.createBomb = function(){
+    // let $bomb = $('<div>',{
+    //             class: 'game-bomb',
+    //             id: `r${this.locationPair[0]}c${this.locationPair[1]}`,
+    //             width: '40px',
+    //             height: '40px',
+    //         });
+    //         let $ground = $('<div>',{
+    //             class: 'game-ground',
+    //         });
+    //         let $homepage_bomb = $('<div>',{
+    //             class: 'game-homepage-bomb',
+    //         });
+    //         let $fuse = $('<div>',{
+    //             class: 'game-fuse',
+    //         });
+    //         let $spark = $('<div>',{
+    //             class: 'game-spark',
+    //         });
+    //         let $triangle_upTriangle = $('<div>',{
+    //             class: 'game-triangle game-upTriangle',
+    //         });
+    //         let $homepage_bomb_top = $('<div>',{
+    //             class: 'game-homepage-bomb-top',
+    //         });
+    //         let $sphereshadow = $('<span>',{
+    //             class: 'game-sphereshadow',
+    //         });
+    //         let $homepage_bomb_body_sphere = $('<div>',{
+    //             class: 'game-homepage-bomb-body sphere',
+    //         });
+            
+
+    //         // need to add to dom to manipulate location
+    //         $('.gamebox').append($bomb);
+    //         $bomb.append($ground);
+    //         $ground.append($homepage_bomb);
+    //         $homepage_bomb.append($fuse);
+    //         $fuse.append($spark);
+    //         $spark.append($triangle_upTriangle);
+    //         $homepage_bomb.append($homepage_bomb_top);
+    //         $homepage_bomb.append($sphereshadow);
+    //         $homepage_bomb.append($homepage_bomb_body_sphere);
+    //         ObstaclePairs
+
+
+    //         // must account for previous gameboard appendings
+    //         $($bomb).css('left', `${(col-(this.bombsInPlay))*40}px`);         //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
+    //         $($bomb).css('top', `${(row)*40}px`);
+    //         console.log(`left: ${(col-(this.bombsInPlay))*40}px`);            //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
+    //         console.log(`top: ${(row)*40}px`);
+// }
+Player.prototype.dropBomb = function(){
+    console.log(`dropping a bomb at ${this.locationPair[0]}, ${this.locationPair[1]}`);
+    bombID = '';
+    let rc = [playerOneRow,playerOneCol]
+    let bomb = new Bomb(this.locationPair, timer);
+    // this.createBomb(this.locationPair[0],this.locationPair[1]);
+    ObstaclePairs[`${this.locationPair[0],this.locationPair[1]}`] = [this.locationPair[0],this.locationPair[1]];
+    this.numberOfBombs--;
+    timer++;   //to ensure multiple bombs dont line up on the same cooldown time
+    this.cooldown[timer + cooldownTime] = this.locationPair;
+    this.bombsInPlay++;
+}
+Player.prototype.refreshCooldowns = function(){
+    console.log(`${this.name} is refreshing`);
+    //find bomb that is going to explode
+    // console.log(bombs[timer]);
+    if(bombs[timer]!== undefined){
+        console.log('found bomb to explode');
+        bombs[timer].explode();
+    }
+
+
+    if(this.cooldown[timer]!==undefined){
+        let row = this.cooldown[timer][0];
+        let col = this.cooldown[timer][1];
+
+        //find bomb that is going to explode
+        if(bombs[timer]!== undefined){
+            bombs[timer].explode;
+        }
+        //trigger the explosion;
+        // explode(row,col,'p1');
+        // explode(row-1,col,'p1');
+        // explode(row+1,col,'p1');
+        // explode(row+2,col,'p1');
+        // explode(row-2,col,'p1');
+        // explode(row,col-1,'p1');
+        // explode(row,col+1,'p1');
+        // explode(row,col-2,'p1');
+        // explode(row,col+2,'p1');
+        // $(`#r${row}c${col}`).remove();
+        // let bombID = `r${row}c${col}`;
+        // console.log(`Removing ${bombID}'s cooldown`);
+        // // $(`#${bombID}`).css('visibility', 'hidden');
+        // delete playerOneCooldowns[timer];
+        // playerOneBombs++;
+        // playerOneBombsInPlay--;
+    }
+    
+    
+}
+
+
+
+
+
+
+//========================================================================================
+
+
+
+
+
+
+
+
+
+let Obstacle = function(location){
+    this.location = location
+}
+
+// an npc
+let createMonster = function(row,col){
+    $('.gamebox').append($('<div>',{
+        class: 'player monster',
+        id: `monster${Object.keys(monsters).length}`,
+    }));
+    monsters.push($('#monster${monasters.length}'));
+    monsters[`monster${Object.keys(monsters).length}`] = `monster${Object.keys(monsters).length}`;
+}
+
+
+
+let Monster = function(id, name, location, domElement){
+    Player.call(this, name, location, domElement);
+    monsters.push(this);
+}
+Monster.prototype = Object.create(Player.prototype);
+Monster.prototype.constructor = Monster;
+
+
+
+
+
+
+let playerOne = new Player('p1', [0,0], 'red');
+let playerTwo = new Player('p2', [0,14], 'blue');
+// players.push(playerOne);
+// players.push(playerTwo);
+
+
 
 
 
@@ -327,26 +646,11 @@ putRandomObstaclesInGame();
 
 
 
-// an npc
-let createMonster = function(row,col){
-    $('.gamebox').append($('<div>',{
-        class: 'player monster',
-        id: `monster${Object.keys(monsters).length}`,
-    }));
-    monsters.push($('#monster${monasters.length}'));
-    monsters[`monster${Object.keys(monsters).length}`] = `monster${Object.keys(monsters).length}`;
-}
-
-// monsterID example: monster0, monster1, ...
-let moveMonster = function(row,col,monsterID){
-
-}
 
 
 
-let getPixleOriginFromRowAndCol = function(row, col){
-    return [row*playerWidth,playerWidth*col];
-}
+
+
 
 
 
@@ -783,36 +1087,48 @@ document.addEventListener('keyup',function (event){
     console.log(event);
     //player one controls
     if(event.key==='d'){
-        stepRight($('.p1'));
+        // stepRight($('.p1'));
+        playerOne.stepRight();
     }
     if(event.key==='a'){
-        stepLeft($('.p1'));
+        // stepLeft($('.p1'));
+        playerOne.stepLeft();
     }
     if(event.key==='s'){
-        stepDown($('.p1'));
+        // stepDown($('.p1'));
+        playerOne.stepDown();
+
     }
     if(event.key==='w'){
-        stepUp($('.p1'));
+        // stepUp($('.p1'));
+        playerOne.stepUp();
+
     }
     if(event.key==='x'){
-        dropBomb($('.p1'));
+        // dropBomb($('.p1'));
+        playerOne.dropBomb();
     }
 
     //player two controls
     if(event.key==='ArrowRight'){
-        stepRight($('.p2'));
+        // stepRight($('.p2'));
+        playerOne.stepRight();
     }
     if(event.key==='ArrowLeft'){
-        stepLeft($('.p2'));
+        // stepLeft($('.p2'));
+        playerTwo.stepLeft();
     }
     if(event.key==='ArrowDown'){
-        stepDown($('.p2'));
+        // stepDown($('.p2'));
+        playerTwo.stepDown();
     }
     if(event.key==='ArrowUp'){
-        stepUp($('.p2'));
+        // stepUp($('.p2'));
+        playerTwo.stepUp();
     }
     if(event.key==='l'){
-        dropBomb($('.p2'));
+        // dropBomb($('.p2'));
+        playerTwo.dropBomb();
     }
 });
 
@@ -926,50 +1242,51 @@ let explode = function(row, col, playerName){
 
 
 
-let refreshCooldowns = function(){
-    if(playerOneCooldowns[timer]!==undefined){
-        let row = playerOneCooldowns[timer][0];
-        let col = playerOneCooldowns[timer][1];
-        explode(row,col,'p1');
-        explode(row-1,col,'p1');
-        explode(row+1,col,'p1');
-        explode(row+2,col,'p1');
-        explode(row-2,col,'p1');
-        explode(row,col-1,'p1');
-        explode(row,col+1,'p1');
-        explode(row,col-2,'p1');
-        explode(row,col+2,'p1');
-        $(`#r${row}c${col}`).remove();
-        let bombID = `r${row}c${col}`;
-        console.log(`Removing ${bombID}'s cooldown`);
-        // $(`#${bombID}`).css('visibility', 'hidden');
-        delete playerOneCooldowns[timer];
-        playerOneBombs++;
-        playerOneBombsInPlay--;
-    }
-    if(playerTwoCooldowns[timer]!==undefined){
-        if(playerTwoCooldowns[timer]!==undefined){
-        let row = playerTwoCooldowns[timer][0];
-        let col = playerTwoCooldowns[timer][1];
-        explode(row,col,'p2');
-        explode(row-1,col,'p2');
-        explode(row+1,col,'p2');
-        explode(row+2,col,'p2');
-        explode(row-2,col,'p2');
-        explode(row,col-1,'p2');
-        explode(row,col+1,'p2');
-        explode(row,col-2,'p2');
-        explode(row,col+2,'p2');
-        $(`#r${row}c${col}`).remove();
-        let bombID = `r${row}c${col}`;
-        console.log(`Removing ${bombID}'s cooldown`);
-        // $(`#${bombID}`).css('visibility', 'hidden');
-        delete playerTwoCooldowns[timer];
-        playerTwoBombs++;
-        playerTwoBombsInPlay--;
-    }
-    }
-}
+// let refreshCooldowns = function(){
+//     if(playerOneCooldowns[timer]!==undefined){
+//         let row = playerOneCooldowns[timer][0];
+//         let col = playerOneCooldowns[timer][1];
+//         explode(row,col,'p1');
+//         explode(row-1,col,'p1');
+//         explode(row+1,col,'p1');
+//         explode(row+2,col,'p1');
+//         explode(row-2,col,'p1');
+//         explode(row,col-1,'p1');
+//         explode(row,col+1,'p1');
+//         explode(row,col-2,'p1');
+//         explode(row,col+2,'p1');
+//         $(`#r${row}c${col}`).remove();
+//         let bombID = `r${row}c${col}`;
+//         console.log(`Removing ${bombID}'s cooldown`);
+//         // $(`#${bombID}`).css('visibility', 'hidden');
+//         delete playerOneCooldowns[timer];
+//         playerOneBombs++;
+//         playerOneBombsInPlay--;
+//     }
+//     if(playerTwoCooldowns[timer]!==undefined){
+//         if(playerTwoCooldowns[timer]!==undefined){
+//         let row = playerTwoCooldowns[timer][0];
+//         let col = playerTwoCooldowns[timer][1];
+//         explode(row,col,'p2');
+//         explode(row-1,col,'p2');
+//         explode(row+1,col,'p2');
+//         explode(row+2,col,'p2');
+//         explode(row-2,col,'p2');
+//         explode(row,col-1,'p2');
+//         explode(row,col+1,'p2');
+//         explode(row,col-2,'p2');
+//         explode(row,col+2,'p2');
+//         $(`#r${row}c${col}`).remove();
+//         let bombID = `r${row}c${col}`;
+//         console.log(`Removing ${bombID}'s cooldown`);
+//         // $(`#${bombID}`).css('visibility', 'hidden');
+//         delete playerTwoCooldowns[timer];
+//         playerTwoBombs++;
+//         playerTwoBombsInPlay--;
+//     }
+//     }
+// }
+
 
 
 
@@ -984,11 +1301,13 @@ let checkTime = function(){
     
     for(let j = 0; j*1000 < timeLimit;++j){
         let timeoutID = setTimeout(function(){
-           console.log(timeoutID);
+        //    console.log(timeoutID);
             //monitor bomb stuff
             
 
-            refreshCooldowns();
+            playerOne.refreshCooldowns();
+            playerTwo.refreshCooldowns();
+
             timer++;
             console.log(timer);
         }, j*1000);//increase the timer every second
