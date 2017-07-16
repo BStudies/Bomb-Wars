@@ -33,7 +33,7 @@ let timeLimit = 300000;
 
 
 let colors = ['purple', 'orange', 'green', 'black'];
-
+let controlOptions = ['up','right','down','left','dropbomb'];
 
 // keep updating this list every movement to make quicker collision detection
 let absoluteIllegalLocationsYAxis = {}
@@ -180,7 +180,7 @@ let playerKill = function(){
 
 
 
-
+// leaves ghost divs sometimes?
 Bomb.prototype.explode = function(){
     console.log('boom');
     console.log(`blowing up bomb(${this.locationPair[0]},${this.locationPair[1]})`);
@@ -565,25 +565,36 @@ let Obstacle = function(location){
 }
 
 // an npc
-let createMonster = function(row,col){
-    $('.gamebox').append($('<div>',{
-        class: 'player monster',
-        id: `monster${Object.keys(monsters).length}`,
-    }));
-    monsters.push($('#monster${monasters.length}'));
-    monsters[`monster${Object.keys(monsters).length}`] = `monster${Object.keys(monsters).length}`;
-}
 
-
-
-let Monster = function(id, name, location, domElement){
-    Player.call(this, name, location, domElement);
+let Monster = function(name, location, color){
+    Player.call(this, name, location, color);
     monsters.push(this);
+    console.log(`Made ${this.name} ${this.color}`);
 }
 Monster.prototype = Object.create(Player.prototype);
 Monster.prototype.constructor = Monster;
+// let controlOptions = ['up','right','down','left','dropbomb'];
 
-
+Monster.prototype.randomMove = function(){
+    let randomCommand = controlOptions[Math.floor(Math.random()*controlOptions.length)];
+    switch(randomCommand){
+        case 'up':
+            this.stepUp();
+            break;
+        case 'right':
+            this.stepRight();
+            break;
+        case 'down':
+            this.stepDown();
+            break;
+        case 'left':
+            this.stepLeft();
+            break;
+        case 'dropbomb':
+            this.dropBomb();
+            break;
+    }
+}
 
 
 
@@ -593,7 +604,18 @@ let playerTwo = new Player('p2', [0,14], 'blue');
 players.push(playerOne);
 players.push(playerTwo);
 
+let createRandomMonsters = function(){
+    let numberOfMonsters = Math.floor(Math.random()*10);
+    console.log(`Monsters: ${numberOfMonsters}`);
+    for(let j = 0; j < numberOfMonsters; ++j){
 
+        let randomRow = Math.floor(Math.random()*playerTwoCol);
+        let randomCollumn = Math.floor(Math.random()*playerTwoCol);
+        let randomColor = colors[Math.floor(Math.random()*colors.length)];
+        let monster = new Monster(`monster${j}`, [randomRow, randomCollumn], randomColor);
+    }
+}
+createRandomMonsters();
 
 
 
@@ -1521,7 +1543,9 @@ let checkTime = function(){
 
             playerOne.refreshCooldowns();
             playerTwo.refreshCooldowns();
-
+            for(let j = 0; j < monsters.length; ++j){
+                monsters[j].randomMove();
+            }
             timer++;
             console.log(timer);
         }, j*1000);//increase the timer every second
