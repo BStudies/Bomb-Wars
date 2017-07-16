@@ -10,12 +10,51 @@ let playerTwoBombsInPlay = 0;
 
 let monsters = {};
 let players = {};
+// location is a pair of x,y coordinates for the game grid
+let Bomb = function(location){
+    this.locationPair = location
+}
+Bomb.prototype.explode = function(){
+    
+}
 let Player = function(name, location){
     this.name = name;
     this.cooldown = {};
-    this.locationPair = [];
+    this.locationPair = location;
     this.bombsInPlay = 0;
     this.numberOfBombs = 1;
+}
+Player.prototype.collisionUp = function(){
+    
+}
+Player.prototype.collisionDown = function(){
+    
+}
+Player.prototype.collisionRight = function(){
+    
+}
+Player.prototype.collisionLeft = function(){
+    
+}
+Player.prototype.stepUp = function(){
+
+}
+Player.prototype.stepDown = function(){
+    
+}
+Player.prototype.stepRight = function(){
+    
+}
+Player.prototype.stepLeft = function(){
+    
+}
+Player.prototype.dropBomb = function(){
+    
+}
+
+
+let Obstacle = function(location){
+    this.location = location
 }
 
 let Monster = function(id, rowColPair){
@@ -326,6 +365,7 @@ let getPixleOriginFromRowAndCol = function(row, col){
 //here
 // at the moment only wall collisison detection works propperly
 // use objects to monitor player current position, so I can use this logic for monsters
+// right now player is a jquery dom object
 let collisionRight = function(player){
 
     if(absoluteIllegalLocationsXAxis[parseInt(player.css('left'))+step]!==undefined){
@@ -707,7 +747,7 @@ let stepUp = function(player){
 
 
 
-
+// switch player to class logic
 let dropBomb = function(player){
     //create a div bomb at player location absolute position
     
@@ -734,13 +774,11 @@ let dropBomb = function(player){
         playerTwoCooldowns[timer + cooldownTime] = rc;
         playerTwoBombsInPlay++;
     }
-    
-
 }
 
 
 
-
+// instead of a jquery dom object, call the functions on the class person to be DRY
 document.addEventListener('keyup',function (event){
     console.log(event);
     //player one controls
