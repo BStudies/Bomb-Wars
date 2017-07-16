@@ -382,7 +382,6 @@ li{
 
 
 
-
 /*uicentric*/
 .colorSelection{
     width: 30px;
@@ -444,6 +443,9 @@ background: purple;
     position: absolute;
     display: block;
     /* top: 40px; */
+}
+.monster{
+    color: teal;
 }
 .p1{
     background: red;

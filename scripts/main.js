@@ -7,8 +7,24 @@ let playerTwoBombs = 1;
 let playerOneBombsInPlay = 0;
 let playerTwoBombsInPlay = 0;
 
-let playerOneCooldowns = {};
-let playerTwoCooldowns = {};
+
+let monsters = {};
+let players = {};
+let Player = function(name, location){
+    this.name = name;
+    this.cooldown = {};
+    this.locationPair = [];
+    this.bombsInPlay = 0;
+    this.numberOfBombs = 1;
+}
+
+let Monster = function(id, rowColPair){
+    this.id = id;
+    this.location = rowColPair;
+}
+
+let playerOneCooldowns = {};        //get rid of these two and put in player to make npcs use same logic
+let playerTwoCooldowns = {};        //get rid of these two and put in player to make npcs use same logic
 let cooldownTime = 1;        //2 sec
 
 let playerOneRow = 0;
@@ -37,9 +53,8 @@ let absoluteIllegalLocationsXAxis = {}
 let illegalLocationsXAxis = {};
 let illegalLocationsYAxis = {};
 
-let rowObsticles = {};
-let colObsticles = {};
-let obsticlePairs = {};
+
+let ObstaclePairs = {};         //example: '3,4': [3,4]
 
 
 
@@ -213,12 +228,11 @@ let moveBomb = function(id, row, col){
 
 
 
-// not working?
-let makeObsticle = function(row,col){
-    // if(rowObsticles[row] === undefined && colObsticles[col] === undefined){
+let makeObstacle = function(row,col){
+    if(ObstaclePairs[`${row},${col}`] === undefined){
         
-        // rowObsticles[row] = row;
-        // colObsticles[col] = col;
+        // rowObstacles[row] = row;
+        // colObstacles[col] = col;
         let index = Math.floor(Math.random()*colors.length);
         console.log(`making a ${colors[index]} object at (${row},${col})`);
         let $obstacle = $('<div>',{
@@ -231,51 +245,63 @@ let makeObsticle = function(row,col){
         $obstacle.css('background-color',`${colors[index]}`);
         $obstacle.css('left',`${col*40}px`);
         $obstacle.css('top',`${row*40}px`);
-        rowObsticles[row] = row;
-        colObsticles[col] = col;
-        obsticlePairs[`${row},${col}`] = [row,col];
-    // }
-    // else{
-    //     console.log(`${row},${col} is occupied`)
-    // }
+        // rowObstacles[row] = row;
+        // colObstacles[col] = col;
+        ObstaclePairs[`${row},${col}`] = [row,col];
+    }
+    else{
+        console.log(`${row},${col} is occupied`)
+    }
 
 }
-// makeObsticle(0,2);
-// makeObsticle(0,3);
-// makeObsticle(0,4);
-// makeObsticle(3,2);
-// makeObsticle(3,3);
-// makeObsticle(3,4);
+// makeObstacle(0,2);
+// makeObstacle(0,3);
+// makeObstacle(0,4);
+// makeObstacle(3,2);
+// makeObstacle(3,3);
+// makeObstacle(3,4);
 
 
 // this generates ghost divs for some reason so I will reveal them.
-let putRandomObsticlesInGame = function(){
+let putRandomObstaclesInGame = function(){
     for(let row = 0; row < playerTwoCol; row+=2){
 
-        let numberOfObsticles = Math.floor(Math.random()*playerTwoCol/2);
-        for(let j = 0; j < numberOfObsticles; ++j){
+        let numberOfObstacles = Math.floor(Math.random()*playerTwoCol/2);
+        for(let j = 0; j < numberOfObstacles; ++j){
             let col = Math.floor(Math.random()*playerTwoCol)
-            if(obsticlePairs[`${row},${col}`] === undefined){
-                makeObsticle(row,col);
-            }
+            makeObstacle(row,col);
         }
         
     }
 
-    // let rowObsticleKeys = Object.keys(rowObsticles);
-    // let colObsticleKeys = Object.keys(colObsticles);
-    // for(let j = 0; j < rowObsticleKeys.length; ++j){
-    //     for(let k = 0; k < colObsticleKeys.length; ++k){
-    //         makeObsticle(rowObsticleKeys[j],colObsticleKeys[k]);
+    // let rowObstacleKeys = Object.keys(rowObstacles);
+    // let colObstacleKeys = Object.keys(colObstacles);
+    // for(let j = 0; j < rowObstacleKeys.length; ++j){
+    //     for(let k = 0; k < colObstacleKeys.length; ++k){
+    //         makeObstacle(rowObstacleKeys[j],colObstacleKeys[k]);
     //     }
     // }
 
 
 }
-putRandomObsticlesInGame();
+putRandomObstaclesInGame();
 
 
 
+// an npc
+let createMonster = function(row,col){
+    $('.gamebox').append($('<div>',{
+        class: 'player monster',
+        id: `monster${Object.keys(monsters).length}`,
+    }));
+    monsters.push($('#monster${monasters.length}'));
+    monsters[`monster${Object.keys(monsters).length}`] = `monster${Object.keys(monsters).length}`;
+}
+
+// monsterID example: monster0, monster1, ...
+let moveMonster = function(row,col,monsterID){
+
+}
 
 
 
@@ -299,6 +325,7 @@ let getPixleOriginFromRowAndCol = function(row, col){
 //stop undoing here
 //here
 // at the moment only wall collisison detection works propperly
+// use objects to monitor player current position, so I can use this logic for monsters
 let collisionRight = function(player){
 
     if(absoluteIllegalLocationsXAxis[parseInt(player.css('left'))+step]!==undefined){
@@ -308,7 +335,7 @@ let collisionRight = function(player){
     if(player.attr('id')==='p1'){
         let newCoordinates = [playerOneRow,playerOneCol+1];
         console.log(newCoordinates);
-        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
+        if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -319,7 +346,7 @@ let collisionRight = function(player){
     }
     else{
         let newCoordinates = [playerTwoRow,playerTwoCol+1];
-        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
+        if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -340,7 +367,7 @@ let collisionLeft = function(player){
     }
     if(player.attr('id')==='p1'){
         let newCoordinates = [playerOneRow,playerOneCol-1];
-        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
+        if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -351,7 +378,7 @@ let collisionLeft = function(player){
     }
     else{
         let newCoordinates = [playerTwoRow,playerTwoCol-1];
-        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
+        if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -371,7 +398,7 @@ let collisionUp = function(player){
     }
     if(player.attr('id')==='p1'){
         let newCoordinates = [playerOneRow-1,playerOneCol];
-        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
+        if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -382,7 +409,7 @@ let collisionUp = function(player){
     }
     else{
         let newCoordinates = [playerTwoRow-1,playerTwoCol];
-        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
+        if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -402,7 +429,7 @@ let collisionDown = function(player){
     }
     if(player.attr('id')==='p1'){
         let newCoordinates = [playerOneRow+1,playerOneCol];
-        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
+        if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -413,7 +440,7 @@ let collisionDown = function(player){
     }
     else{
         let newCoordinates = [playerTwoRow+1,playerTwoCol];
-        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
+        if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -574,8 +601,8 @@ let stepUp = function(player){
 //         $($bombID).css('translateZ','1');
 //         let rcLeft = playerOneRow*playerWidth;
 //         let rcTop = playerOneRow*playerWidth;
-//         rowObsticles[rc[0]] = rc[0];
-//         colObsticles[rc[1]] = rc[1];
+//         rowObstacles[rc[0]] = rc[0];
+//         colObstacles[rc[1]] = rc[1];
 //         playerOneBombs--;
 //         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
 //         playerOneCooldowns[timer + cooldownTime] = rc;
@@ -590,8 +617,8 @@ let stepUp = function(player){
 //         $($bombID).css('translateZ','1');
 //         let rcLeft = playerTwoRow*playerWidth;
 //         let rcTop = playerTwoRow*playerWidth;
-//         rowObsticles[rc[0]] = rc[0];
-//         colObsticles[rc[1]] = rc[1];
+//         rowObstacles[rc[0]] = rc[0];
+//         colObstacles[rc[1]] = rc[1];
 //         playerTwoBombs--;
 //         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
 //         playerTwoCooldowns[timer + cooldownTime] = rc;
@@ -651,8 +678,8 @@ let stepUp = function(player){
 
 //         let rcLeft = playerOneRow*playerWidth;
 //         let rcTop = playerOneRow*playerWidth;
-//         rowObsticles[rc[0]] = rc[0];
-//         colObsticles[rc[1]] = rc[1];
+//         rowObstacles[rc[0]] = rc[0];
+//         colObstacles[rc[1]] = rc[1];
 //         playerOneBombs--;
 //         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
 //         playerOneCooldowns[timer + cooldownTime] = rc;
@@ -667,8 +694,8 @@ let stepUp = function(player){
 //         $($bombID).css('translateZ','1');
 //         let rcLeft = playerTwoRow*playerWidth;
 //         let rcTop = playerTwoRow*playerWidth;
-//         rowObsticles[rc[0]] = rc[0];
-//         colObsticles[rc[1]] = rc[1];
+//         rowObstacles[rc[0]] = rc[0];
+//         colObstacles[rc[1]] = rc[1];
 //         playerTwoBombs--;
 //         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
 //         playerTwoCooldowns[timer + cooldownTime] = rc;
@@ -688,8 +715,9 @@ let dropBomb = function(player){
     if(player.hasClass('p1') && playerOneBombs> 0){
         let rc = [playerOneRow,playerOneCol]
         createBomb(rc[0],rc[1]);
-        rowObsticles[rc[0]] = rc[0];
-        colObsticles[rc[1]] = rc[1];
+        // rowObstacles[rc[0]] = rc[0];
+        // colObstacles[rc[1]] = rc[1];
+        ObstaclePairs[`${rc[0],rc[1]}`] = [rc];
         playerOneBombs--;
         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
         playerOneCooldowns[timer + cooldownTime] = rc;
@@ -698,8 +726,9 @@ let dropBomb = function(player){
     if(player.hasClass('p2') && playerTwoBombs> 0){
         let rc = [playerTwoRow,playerTwoCol]
         createBomb(rc[0],rc[1]);
-        rowObsticles[rc[0]] = rc[0];
-        colObsticles[rc[1]] = rc[1];
+        // rowObstacles[rc[0]] = rc[0];
+        // colObstacles[rc[1]] = rc[1];
+        ObstaclePairs[`${rc[0],rc[1]}`] = [rc]
         playerTwoBombs--;
         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
         playerTwoCooldowns[timer + cooldownTime] = rc;
@@ -769,8 +798,8 @@ document.addEventListener('keyup',function (event){
     
 
 //     console.log('boom');
-//     delete colObsticles[col];
-//     delete rowObsticles[row];
+//     delete colObstacles[col];
+//     delete rowObstacles[row];
 //     let $bombID = $(`#r${row}c${col}`);
 //     $bombID.css('background','white');
 //     $bombID.css('visibility','visible');
@@ -800,9 +829,9 @@ let explode = function(row, col, playerName){
     
     console.log('boom');
     console.log(`blowing up r${row}c${col}`);
-    // delete colObsticles[col];
-    // delete rowObsticles[row];
-    delete obsticlePairs[`${row},${col}`];
+    // delete colObstacles[col];
+    // delete rowObstacles[row];
+    delete ObstaclePairs[`${row},${col}`];
     $(`#obstacler${row}c${col}`).remove();
     //create a div for the object and append to the row and col
     let $explodeCell = $('<div>',{
@@ -812,7 +841,7 @@ let explode = function(row, col, playerName){
 
     // destroy obstacles
     // is destroying more than what is required I wont use this
-    // if(rowObsticles[row] !== undefined && colObsticles[col] !== undefined){
+    // if(rowObstacles[row] !== undefined && colObstacles[col] !== undefined){
     //     $(`#obstacler${row}c${col}`).remove();
     // }
 
