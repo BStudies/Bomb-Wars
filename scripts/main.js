@@ -8,7 +8,7 @@ let playerOneBombsInPlay = 0;
 let playerTwoBombsInPlay = 0;
 let bombs = {};     //example time: thisbomb
 
-let monsters = [];
+let monsters = {};
 let players = [];
 
 let playerOneCooldowns = {};        //get rid of these two and put in player to make npcs use same logic
@@ -120,8 +120,8 @@ let Bomb = function(location, timeDropped, playerThatDropped){
             // must account for previous gameboard appendings
             $($bomb).css('left', `${(this.locationPair[1]-(Object.keys(bombs).length))*40}px`);         //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
             $($bomb).css('top', `${(this.locationPair[0])*40}px`);
-            console.log(`left: ${(this.locationPair[1]-(Object.keys(bombs).length))*40}px`);            //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
-            console.log(`top: ${(this.locationPair[0])*40}px`);
+            // console.log(`left: ${(this.locationPair[1]-(Object.keys(bombs).length))*40}px`);            //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
+            // console.log(`top: ${(this.locationPair[0])*40}px`);
             this.domElement = $($bomb);
             bombs[this.explodeTime] = this;
 }
@@ -485,7 +485,7 @@ Player.prototype.dropBomb = function(){
     }
 }
 Player.prototype.refreshCooldowns = function(){
-    console.log(`${this.name} is refreshing`);
+    // console.log(`${this.name} is refreshing`);
     //find bomb that is going to explode
     // console.log(bombs[timer]);
     if(bombs[timer]!== undefined){
@@ -568,7 +568,8 @@ let Obstacle = function(location){
 
 let Monster = function(name, location, color){
     Player.call(this, name, location, color);
-    monsters.push(this);
+    // monsters.push(this);
+    monsters[this.name] = this;
     console.log(`Made ${this.name} ${this.color}`);
 }
 Monster.prototype = Object.create(Player.prototype);
@@ -596,7 +597,12 @@ Monster.prototype.randomMove = function(){
     }
 }
 
-
+Monster.prototype.die = function(){
+    console.log(`${this.name} died`);
+    this.domElement.remove();
+    delete PlayerLocationPairs[`${this.locationPair[0]},${this.locationPair[1]}`]
+    delete monsters[this.name];
+}
 
 
 let playerOne = new Player('p1', [0,0], 'red');
@@ -611,8 +617,8 @@ let createRandomMonsters = function(){
 
         let randomRow = Math.floor(Math.random()*playerTwoCol);
         let randomCollumn = Math.floor(Math.random()*playerTwoCol);
-        let randomColor = colors[Math.floor(Math.random()*colors.length)];
-        let monster = new Monster(`monster${j}`, [randomRow, randomCollumn], randomColor);
+        // let randomColor = colors[Math.floor(Math.random()*colors.length)];
+        let monster = new Monster(`monster${j}`, [randomRow, randomCollumn], 'teal');
     }
 }
 createRandomMonsters();
@@ -1534,7 +1540,6 @@ document.addEventListener('keyup',function (event){
 let checkTime = function(){
     //end is 300,000ms = 5min
     //1000*60*5
-    
     for(let j = 0; j*1000 < timeLimit;++j){
         let timeoutID = setTimeout(function(){
         //    console.log(timeoutID);
@@ -1543,8 +1548,10 @@ let checkTime = function(){
 
             playerOne.refreshCooldowns();
             playerTwo.refreshCooldowns();
-            for(let j = 0; j < monsters.length; ++j){
-                monsters[j].randomMove();
+            let monsterKeys = Object.keys(monsters);
+            for(let j = 0; j < monsterKeys.length; ++j){
+                monsters[monsterKeys[j]].randomMove();
+                monsters[monsterKeys[j]].refreshCooldowns();
             }
             timer++;
             console.log(timer);
