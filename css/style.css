@@ -362,10 +362,10 @@ li{
     position: absolute; 
     width: 40px;
     height: 40px;
-    /* display: inline; */
-    /* float: left; */
+    display: inline;
+    float: left;
+    background: white;
     color: black;
-    /*visibility: hidden;*/
 }
 
 
