@@ -14,6 +14,7 @@ body{
     text-align: center;
     font-family: 'Indie Flower', cursive;
     /* display: inline-block;  */
+     /* transform: perspective(800px) rotateX(30deg) translateY(-100px);  */
 }
 
 nav{
@@ -225,7 +226,7 @@ li{
     position: absolute;
     height: 10px;
     width: 3px;
-    top: -55px;
+     top: -55px; 
 }
 .game-upTriangle{
 	border-left: 5px solid transparent;
@@ -233,14 +234,14 @@ li{
 	border-bottom: 5px solid red;
     /*top: -40%;*/
     left: -250%;
-    animation: game-sparkUp 1s;
+    /* animation: game-sparkUp 1s linear; */
     height: 50px;
     width: 5px;
 }
 /*based on https://jsfiddle.net/u663m81s/*/
 .game-fuse{
-    height: 20%;
-    width: 0%;
+    height: 10%;
+    /* width: 5px; */
     background: transparent;
     border-radius: 0px 0px 0px 370px/225px;
     border: solid 5px grey;
@@ -249,17 +250,17 @@ li{
     /* margin:20px; */
     position: absolute;
     /*top: -29%;*/
-    animation: game-burnFuse 1s linear;
+    /* animation: game-burnFuse 2s linear; */
 }
 
 @keyframes game-burnFuse{
     0%{
-        top: -29%;
-        left: 0;
+         /* top: -25px;  */
+        left: 0px;
     }
     100%{
-        top: 30%;
-        left: 10%;
+         /* top: -10px;  */
+        left: 20px;
     }
 }
 @keyframes game-sparkUp{
@@ -297,7 +298,7 @@ li{
     66%{
         width: 40px;
         height: 40px;
-        background-color: black;
+        background-color: grey;
     }
     100%{
         width: 20px;
@@ -334,13 +335,13 @@ li{
 }
 
 .game-homepage-bomb-body{
-    background: black;
+    /* background: black; */
     border-radius: 100%;
     width: 40px;
     height: 40px;
     position: absolute;
     left: 0;
-    animation: game-bomb-body-animation 1s; 
+    animation: game-bomb-body-animation 2s; 
 }
 .game-homepage-bomb-body:hover{
     border-color: red;
@@ -366,6 +367,15 @@ li{
     color: black;
     /*visibility: hidden;*/
 }
+
+
+
+.obstacle{
+    width: 40px;
+    height: 40px;
+    position: absolute;
+}
+
 
 
 
@@ -419,7 +429,6 @@ background: purple;
     margin: 0 auto;  
     position: relative;  
     display: block;
-
     /*https://cssanimation.rocks/spheres*/
     perspective: 1200px;
     perspective-origin: 50% 50%;

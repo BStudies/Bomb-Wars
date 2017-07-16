@@ -2,22 +2,22 @@
 
 // use left and top for positioning, not bottom and right
 
-let playerOneBombs = 3;
-let playerTwoBombs = 3;
+let playerOneBombs = 1;
+let playerTwoBombs = 1;
 let playerOneBombsInPlay = 0;
 let playerTwoBombsInPlay = 0;
 
 let playerOneCooldowns = {};
 let playerTwoCooldowns = {};
-let cooldownTime = 2;        //2 sec
+let cooldownTime = 1;        //2 sec
 
 let playerOneRow = 0;
 let playerOneCol = 0;
 let playerTwoRow = 0;
 let playerTwoCol = 14;
 let timer = 0;
-let playerWidth = parseInt($('.p1').css('width'));
-
+// let playerWidth = parseInt($('.p1').css('width'));
+let playerWidth = 40;   //I have to set this value now because chaning perspective results in small round errors
 
 let rightEdge = 600;
 let leftEdge = 0;
@@ -28,8 +28,7 @@ let step = playerWidth;
 let timeLimit = 300000;
 
 
-let colors = ['purple','pink','green','brown'];
-
+let colors = ['purple', 'orange', 'green', 'black'];
 
 
 // keep updating this list every movement to make quicker collision detection
@@ -40,8 +39,7 @@ let illegalLocationsYAxis = {};
 
 let rowObsticles = {};
 let colObsticles = {};
-
-
+let obsticlePairs = {};
 
 
 
@@ -143,9 +141,9 @@ let createBomb = function(row, col){
 
             // must account for previous gameboard appendings
             $($bomb).css('left', `${(col-(playerOneBombsInPlay))*40}px`);         //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
-            $($bomb).css('top', `${(row-1)*40}px`);
+            $($bomb).css('top', `${(row)*40}px`);
             console.log(`left: ${(col-(playerOneBombsInPlay))*40}px`);            //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
-            console.log(`top: ${(row-1)*40}px`);
+            console.log(`top: ${(row)*40}px`);
 }
 
 // createBomb(3,4);
@@ -217,23 +215,64 @@ let moveBomb = function(id, row, col){
 
 // not working?
 let makeObsticle = function(row,col){
-    rowObsticles[row] = row;
-    colObsticles[col] = col
-    let index = Math.floor(Math.random()*colors.length-1);
-    $('.gamebox').append($('<div>',{
-        id: `obsticle${row}c${col}`,
-        background: `${colors[index]}`,
-        width: `${playerWidth}`,
-        height: `${playerWidth}`,
-        position: 'absolute',
-        left: `${row*40}`,
-        top: `${col*40}`,
-    }));
+    // if(rowObsticles[row] === undefined && colObsticles[col] === undefined){
+        
+        // rowObsticles[row] = row;
+        // colObsticles[col] = col;
+        let index = Math.floor(Math.random()*colors.length);
+        console.log(`making a ${colors[index]} object at (${row},${col})`);
+        let $obstacle = $('<div>',{
+            id: `obstacler${row}c${col}`,
+            class: 'obstacle',
+        });
+
+        $('.gamebox').append($obstacle);
+        $obstacle = $(`#obstacler${row}c${col}`)
+        $obstacle.css('background-color',`${colors[index]}`);
+        $obstacle.css('left',`${col*40}px`);
+        $obstacle.css('top',`${row*40}px`);
+        rowObsticles[row] = row;
+        colObsticles[col] = col;
+        obsticlePairs[`${row},${col}`] = [row,col];
+    // }
+    // else{
+    //     console.log(`${row},${col} is occupied`)
+    // }
+
 }
-makeObsticle(0,2);
+// makeObsticle(0,2);
+// makeObsticle(0,3);
+// makeObsticle(0,4);
+// makeObsticle(3,2);
+// makeObsticle(3,3);
+// makeObsticle(3,4);
 
 
+// this generates ghost divs for some reason so I will reveal them.
+let putRandomObsticlesInGame = function(){
+    for(let row = 0; row < playerTwoCol; row+=2){
 
+        let numberOfObsticles = Math.floor(Math.random()*playerTwoCol/2);
+        for(let j = 0; j < numberOfObsticles; ++j){
+            let col = Math.floor(Math.random()*playerTwoCol)
+            if(obsticlePairs[`${row},${col}`] === undefined){
+                makeObsticle(row,col);
+            }
+        }
+        
+    }
+
+    // let rowObsticleKeys = Object.keys(rowObsticles);
+    // let colObsticleKeys = Object.keys(colObsticles);
+    // for(let j = 0; j < rowObsticleKeys.length; ++j){
+    //     for(let k = 0; k < colObsticleKeys.length; ++k){
+    //         makeObsticle(rowObsticleKeys[j],colObsticleKeys[k]);
+    //     }
+    // }
+
+
+}
+putRandomObsticlesInGame();
 
 
 
@@ -257,7 +296,8 @@ let getPixleOriginFromRowAndCol = function(row, col){
 
 
 
-
+//stop undoing here
+//here
 // at the moment only wall collisison detection works propperly
 let collisionRight = function(player){
 
@@ -268,7 +308,7 @@ let collisionRight = function(player){
     if(player.attr('id')==='p1'){
         let newCoordinates = [playerOneRow,playerOneCol+1];
         console.log(newCoordinates);
-        if(rowObsticles[newCoordinates[0]]!==undefined && colObsticles[newCoordinates[1]]!==undefined){
+        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -279,7 +319,7 @@ let collisionRight = function(player){
     }
     else{
         let newCoordinates = [playerTwoRow,playerTwoCol+1];
-        if(rowObsticles[newCoordinates[0]]!==undefined && colObsticles[newCoordinates[1]]!==undefined){
+        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -300,7 +340,7 @@ let collisionLeft = function(player){
     }
     if(player.attr('id')==='p1'){
         let newCoordinates = [playerOneRow,playerOneCol-1];
-        if(rowObsticles[newCoordinates[0]]!==undefined && colObsticles[newCoordinates[1]]!==undefined){
+        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -311,7 +351,7 @@ let collisionLeft = function(player){
     }
     else{
         let newCoordinates = [playerTwoRow,playerTwoCol-1];
-        if(rowObsticles[newCoordinates[0]]!==undefined && colObsticles[newCoordinates[1]]!==undefined){
+        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -331,7 +371,7 @@ let collisionUp = function(player){
     }
     if(player.attr('id')==='p1'){
         let newCoordinates = [playerOneRow-1,playerOneCol];
-        if(rowObsticles[newCoordinates[0]]!==undefined && colObsticles[newCoordinates[1]]!==undefined){
+        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -342,7 +382,7 @@ let collisionUp = function(player){
     }
     else{
         let newCoordinates = [playerTwoRow-1,playerTwoCol];
-        if(rowObsticles[newCoordinates[0]]!==undefined && colObsticles[newCoordinates[1]]!==undefined){
+        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -362,7 +402,7 @@ let collisionDown = function(player){
     }
     if(player.attr('id')==='p1'){
         let newCoordinates = [playerOneRow+1,playerOneCol];
-        if(rowObsticles[newCoordinates[0]]!==undefined && colObsticles[newCoordinates[1]]!==undefined){
+        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -373,7 +413,7 @@ let collisionDown = function(player){
     }
     else{
         let newCoordinates = [playerTwoRow+1,playerTwoCol];
-        if(rowObsticles[newCoordinates[0]]!==undefined && colObsticles[newCoordinates[1]]!==undefined){
+        if(obsticlePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
             console.log(`collision detected`)
             return true;
         }
@@ -672,7 +712,7 @@ let dropBomb = function(player){
 
 
 
-document.addEventListener('keypress',function (event){
+document.addEventListener('keyup',function (event){
     console.log(event);
     //player one controls
     if(event.key==='d'){
@@ -760,13 +800,21 @@ let explode = function(row, col, playerName){
     
     console.log('boom');
     console.log(`blowing up r${row}c${col}`);
-    delete colObsticles[col];
-    delete rowObsticles[row];
+    // delete colObsticles[col];
+    // delete rowObsticles[row];
+    delete obsticlePairs[`${row},${col}`];
+    $(`#obstacler${row}c${col}`).remove();
     //create a div for the object and append to the row and col
     let $explodeCell = $('<div>',{
         id: `explosionr${row}c${col}`,
         class: 'explosion',
     });
+
+    // destroy obstacles
+    // is destroying more than what is required I wont use this
+    // if(rowObsticles[row] !== undefined && colObsticles[col] !== undefined){
+    //     $(`#obstacler${row}c${col}`).remove();
+    // }
 
     // need to add to dom to manipulate location
     $('.gamebox').append($explodeCell);
