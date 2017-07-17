@@ -9,9 +9,9 @@ let bombs = {};     //example time: thisbomb
 let monsters = {};
 let players = [];
 
-let playerOneCooldowns = {};        //get rid of these two and put in player to make npcs use same logic
-let playerTwoCooldowns = {};        //get rid of these two and put in player to make npcs use same logic
-let cooldownTime = 1;        //2 sec
+// let playerOneCooldowns = {};        //get rid of these two and put in player to make npcs use same logic
+// let playerTwoCooldowns = {};        //get rid of these two and put in player to make npcs use same logic
+let cooldownTime = 2;        //2 sec
 
 let playerOneRow = 0;
 let playerOneCol = 0;
@@ -68,7 +68,7 @@ let $gamebox = $('.gamebox');
 let Bomb = function(location, timeDropped, playerThatDropped){
     this.playerThatDropped = playerThatDropped
     this.locationPair = location
-    this.explodeTime = timeDropped+2;
+    this.explodeTime = timeDropped+4;
     console.log(`creating bomb(${this.locationPair[0]},${this.locationPair[1]})`);
     let $bomb = $('<div>',{
                 class: 'game-bomb',
@@ -120,9 +120,9 @@ let Bomb = function(location, timeDropped, playerThatDropped){
             $($bomb).css('top', `${(this.locationPair[0])*40}px`);
             // console.log(`left: ${(this.locationPair[1]-(Object.keys(bombs).length))*40}px`);            //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
             // console.log(`top: ${(this.locationPair[0])*40}px`);
-            this.domElement = $($bomb);
-            playerThatDropped.bombs[this.explodeTime] = this;
-            bombsInPlay++;
+    this.domElement = $($bomb);
+    playerThatDropped.bombs[this.explodeTime] = this;
+    bombsInPlay++;
 }
 
 
@@ -150,6 +150,7 @@ let removeObstacle = function(row,col){
     if(PlayerLocationPairs[`${row},${col}`] !== undefined){
         // PlayerLocationPairs[`${row},${col}`].die();
         PlayerLocationPairs[`${row},${col}`][0].die();
+
         if(Object.keys(PlayerLocationPairs).length === 1){
             console.log(`${PlayerLocationPairs[Object.keys(PlayerLocationPairs)[0]][0].name} has won!!!!`);
             let $winBanner = $('<h3>',{
@@ -260,7 +261,7 @@ Bomb.prototype.explode = function(){
 
     delete this.playerThatDropped.bombs[timer]
     this.playerThatDropped.numberOfBombs++;
-    bombsInPlay--;
+    --bombsInPlay;
 }
 
 
@@ -302,6 +303,7 @@ let Player = function(name, location, color){
     this.name = name;
     this.cooldown = {};
     this.locationPair = location;
+    PlayerLocationPairs[`${this.locationPair[0]},${this.locationPair[1]}`] = [this.locationPair[0],this.locationPair[1]];
     this.bombsInPlay = 0;
     this.numberOfBombs = 1;
     this.bombs = {}     //example time: bomb
@@ -473,6 +475,7 @@ Player.prototype.dropBomb = function(){
         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
         this.cooldown[timer + cooldownTime] = this.locationPair;
         this.bombsInPlay++;
+        // bombsInPlay++;
         this.bombs[timer+2] = bomb;
     }
 }
@@ -818,7 +821,7 @@ initializeIllegalLocation();
 
 
 let makeObstacle = function(row,col){
-    if(ObstaclePairs[`${row},${col}`] === undefined){
+    if(ObstaclePairs[`${row},${col}`] === undefined && PlayerLocationPairs[`${row},${col}`]===undefined){
         
         // rowObstacles[row] = row;
         // colObstacles[col] = col;
@@ -1341,6 +1344,7 @@ document.addEventListener('keyup',function (event){
     if(event.key==='x'){
         // dropBomb($('.p1'));
         playerOne.dropBomb();
+        ++bombsInPlay;
     }
 
     //player two controls
@@ -1363,6 +1367,7 @@ document.addEventListener('keyup',function (event){
     if(event.key==='l'){
         // dropBomb($('.p2'));
         playerTwo.dropBomb();
+        bombsInPlay++;
     }
 });
 
@@ -1537,7 +1542,7 @@ let checkTime = function(){
         //    console.log(timeoutID);
             //monitor bomb stuff
             
-
+            bombsInPlay = 0;
             playerOne.refreshCooldowns();
             playerTwo.refreshCooldowns();
             let monsterKeys = Object.keys(monsters);
