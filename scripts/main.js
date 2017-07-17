@@ -2,10 +2,8 @@
 
 // use left and top for positioning, not bottom and right
 
-let playerOneBombs = 1;
-let playerTwoBombs = 1;
-let playerOneBombsInPlay = 0;
-let playerTwoBombsInPlay = 0;
+
+let bombsInPlay = 0;
 let bombs = {};     //example time: thisbomb
 
 let monsters = {};
@@ -118,12 +116,13 @@ let Bomb = function(location, timeDropped, playerThatDropped){
 
 
             // must account for previous gameboard appendings
-            $($bomb).css('left', `${(this.locationPair[1]-(Object.keys(bombs).length))*40}px`);         //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
+            $($bomb).css('left', `${(this.locationPair[1]-(bombsInPlay))*40}px`);         //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
             $($bomb).css('top', `${(this.locationPair[0])*40}px`);
             // console.log(`left: ${(this.locationPair[1]-(Object.keys(bombs).length))*40}px`);            //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
             // console.log(`top: ${(this.locationPair[0])*40}px`);
             this.domElement = $($bomb);
-            bombs[this.explodeTime] = this;
+            playerThatDropped.bombs[this.explodeTime] = this;
+            bombsInPlay++;
 }
 
 
@@ -255,27 +254,13 @@ Bomb.prototype.explode = function(){
             
         },1000);  //delay clear for a second
         
-        
-        
-
-
-        // if(playerTwoRow === row && playerTwoCol === col){
-        //     console.log('Player One Wins!!!')
-        //     $('#p2').remove();
-            
-        // }
-        // if(playerOneRow === row && playerOneCol === col){
-        //     console.log('Player Two Wins!!!')
-        //     $('#p1').remove();
-            
-        // }
     }
 
     
 
-    delete bombs[timer]
+    delete this.playerThatDropped.bombs[timer]
     this.playerThatDropped.numberOfBombs++;
-    // bombsInPlay--;
+    bombsInPlay--;
 }
 
 
@@ -319,6 +304,7 @@ let Player = function(name, location, color){
     this.locationPair = location;
     this.bombsInPlay = 0;
     this.numberOfBombs = 1;
+    this.bombs = {}     //example time: bomb
     PlayerLocationPairs[this.locationPair] = [this];
     $gamebox.append($('<div>',{
         class: `player clearfix ${name}`,
@@ -487,15 +473,16 @@ Player.prototype.dropBomb = function(){
         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
         this.cooldown[timer + cooldownTime] = this.locationPair;
         this.bombsInPlay++;
+        this.bombs[timer+2] = bomb;
     }
 }
 Player.prototype.refreshCooldowns = function(){
     // console.log(`${this.name} is refreshing`);
     //find bomb that is going to explode
     // console.log(bombs[timer]);
-    if(bombs[timer]!== undefined){
-        console.log(`found bomb to explode ${bombs[timer].locationPair}`);
-        bombs[timer].explode();
+    if(this.bombs[timer]!== undefined){
+        console.log(`found bomb to explode ${this.bombs[timer].locationPair}`);
+        this.bombs[timer].explode();
     }
 
 
@@ -616,7 +603,7 @@ players.push(playerOne);
 players.push(playerTwo);
 
 let createRandomMonsters = function(){
-    let numberOfMonsters = Math.floor(Math.random()*10);
+    let numberOfMonsters = Math.floor(Math.random()*5);
     console.log(`Monsters: ${numberOfMonsters}`);
     for(let j = 0; j < numberOfMonsters; ++j){
 
@@ -1359,7 +1346,7 @@ document.addEventListener('keyup',function (event){
     //player two controls
     if(event.key==='ArrowRight'){
         // stepRight($('.p2'));
-        playerOne.stepRight();
+        playerTwo.stepRight();
     }
     if(event.key==='ArrowLeft'){
         // stepLeft($('.p2'));
