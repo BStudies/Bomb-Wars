@@ -776,7 +776,7 @@ let checkTime = function(){
         }
 
         timer++;
-    }, 1000)
+    }, 500)
     //stop execution
     // clearInterval(id);
 }
