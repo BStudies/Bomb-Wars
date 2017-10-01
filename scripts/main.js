@@ -155,7 +155,7 @@ let Bomb = function(location, timeDropped, playerThatDropped){
             $($bomb).css('top', `${top}px`);
     this.domElement = $($bomb);
     playerThatDropped.bombs[this.explodeTime] = this;
-    bombsInPlay++;
+    // bombsInPlay++;
 }
 
 
@@ -280,7 +280,7 @@ Bomb.prototype.explode = function(){
 
     delete this.playerThatDropped.bombs[timer]
     this.playerThatDropped.numberOfBombs++;
-    --bombsInPlay;
+    // --bombsInPlay;
 }
 
 
@@ -443,7 +443,7 @@ Player.prototype.dropBomb = function(){
         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
         this.cooldown[timer + cooldownTime] = this.locationPair;
         this.bombsInPlay++;
-        bombsInPlay++;
+        // bombsInPlay++;
         this.bombs[timer+2] = bomb;
     }
 }
@@ -769,11 +769,11 @@ let checkTime = function(){
         console.log(timer);
         playerOne.refreshCooldowns();
         playerTwo.refreshCooldowns();
-        // let monsterKeys = Object.keys(monsters);
-        // for(let j = 0; j < monsterKeys.length; ++j){
-        //     monsters[monsterKeys[j]].randomMove();
-        //     monsters[monsterKeys[j]].refreshCooldowns();
-        // }
+        let monsterKeys = Object.keys(monsters);
+        for(let j = 0; j < monsterKeys.length; ++j){
+            monsters[monsterKeys[j]].randomMove();
+            monsters[monsterKeys[j]].refreshCooldowns();
+        }
 
         timer++;
     }, 1000)
