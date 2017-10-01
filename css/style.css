@@ -200,17 +200,19 @@ li{
     background-color: black;
     border: black;
     border-radius: 50%;
-    position: absolute; 
+    /* position: absolute;  */
     width: 40px;
     height: 40px;
-    position: inherit; 
+    /* position: inherit;  */
     float: left;    
     visibility: hidden; 
     display: inline;
+    z-index: 1;
 }
 
 .game-bomb{
-    position: inherit; 
+    /* position: inherit;  */
+    position: absolute;
     width: 40px;
     height: 40px;
     display: inline;
@@ -426,12 +428,12 @@ background: purple;
     width: 600px;
     height: 600px;
     margin: 0 auto;  
-    position: relative;  
+    /* position: relative;   */
     display: block;
     /*https://cssanimation.rocks/spheres*/
     perspective: 1200px;
     perspective-origin: 50% 50%;
-    display: inline-block;
+    /* display: inline-block; */
 }
 
 

@@ -57,6 +57,38 @@ let $gamebox = $('.gamebox');
 
 
 
+//========================================================================================
+// gamebox grid
+// height 15
+// width 15
+
+function makeGrid(){
+    for(let i = 0; i < 15; ++i){
+        let $col = $("<div>",{
+            height: '40px',
+            class: `col${i}`,
+        })
+        $col.css("display", "inline-block");
+        for(let j = 0; j < 15; ++j){
+            let $cell = $("<div>",{
+                class: `r${j}c${i}`,
+                height: '40px',
+                width: '40px',
+                // display: 'inline-block',
+            })
+            // $cell.display = "inline-block"
+            $col.append($cell);
+        }
+        $gamebox.append($col) 
+    }
+    
+}
+makeGrid()
+
+
+
+
+
 
 
 
@@ -70,6 +102,7 @@ let Bomb = function(location, timeDropped, playerThatDropped){
     this.locationPair = location
     this.explodeTime = timeDropped+4;
     console.log(`creating bomb(${this.locationPair[0]},${this.locationPair[1]})`);
+    console.log(`at time: ${timer}`)
     let $bomb = $('<div>',{
                 class: 'game-bomb',
                 id: `bomb(${this.locationPair[0]},${this.locationPair[1]})`,
@@ -116,10 +149,10 @@ let Bomb = function(location, timeDropped, playerThatDropped){
 
 
             // must account for previous gameboard appendings
-            $($bomb).css('left', `${(this.locationPair[1]-(bombsInPlay))*40}px`);         //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
-            $($bomb).css('top', `${(this.locationPair[0])*40}px`);
-            // console.log(`left: ${(this.locationPair[1]-(Object.keys(bombs).length))*40}px`);            //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
-            // console.log(`top: ${(this.locationPair[0])*40}px`);
+            let left = (this.locationPair[1]-(bombsInPlay))*40
+            let top = (this.locationPair[0])*40
+            $($bomb).css('left', `${left}px`);         //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
+            $($bomb).css('top', `${top}px`);
     this.domElement = $($bomb);
     playerThatDropped.bombs[this.explodeTime] = this;
     bombsInPlay++;
@@ -217,20 +250,6 @@ Bomb.prototype.explode = function(){
             
         },1000);  //delay clear for a second
         
-        
-        
-
-
-        // if(playerTwoRow === row && playerTwoCol === col){
-        //     console.log('Player One Wins!!!')
-        //     $('#p2').remove();
-            
-        // }
-        // if(playerOneRow === row && playerOneCol === col){
-        //     console.log('Player Two Wins!!!')
-        //     $('#p1').remove();
-            
-        // }
     }
     for(let j = -2; j < 3; ++j){
         let colLocation = this.locationPair[1]+j
@@ -408,58 +427,7 @@ Player.prototype.stepLeft = function(){
         PlayerLocationPairs[this.locationPair] = [this];
     }
 }
-// Player.prototype.createBomb = function(){
-    // let $bomb = $('<div>',{
-    //             class: 'game-bomb',
-    //             id: `r${this.locationPair[0]}c${this.locationPair[1]}`,
-    //             width: '40px',
-    //             height: '40px',
-    //         });
-    //         let $ground = $('<div>',{
-    //             class: 'game-ground',
-    //         });
-    //         let $homepage_bomb = $('<div>',{
-    //             class: 'game-homepage-bomb',
-    //         });
-    //         let $fuse = $('<div>',{
-    //             class: 'game-fuse',
-    //         });
-    //         let $spark = $('<div>',{
-    //             class: 'game-spark',
-    //         });
-    //         let $triangle_upTriangle = $('<div>',{
-    //             class: 'game-triangle game-upTriangle',
-    //         });
-    //         let $homepage_bomb_top = $('<div>',{
-    //             class: 'game-homepage-bomb-top',
-    //         });
-    //         let $sphereshadow = $('<span>',{
-    //             class: 'game-sphereshadow',
-    //         });
-    //         let $homepage_bomb_body_sphere = $('<div>',{
-    //             class: 'game-homepage-bomb-body sphere',
-    //         });
-            
 
-    //         // need to add to dom to manipulate location
-    //         $('.gamebox').append($bomb);
-    //         $bomb.append($ground);
-    //         $ground.append($homepage_bomb);
-    //         $homepage_bomb.append($fuse);
-    //         $fuse.append($spark);
-    //         $spark.append($triangle_upTriangle);
-    //         $homepage_bomb.append($homepage_bomb_top);
-    //         $homepage_bomb.append($sphereshadow);
-    //         $homepage_bomb.append($homepage_bomb_body_sphere);
-    //         ObstaclePairs
-
-
-    //         // must account for previous gameboard appendings
-    //         $($bomb).css('left', `${(col-(this.bombsInPlay))*40}px`);         //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
-    //         $($bomb).css('top', `${(row)*40}px`);
-    //         console.log(`left: ${(col-(this.bombsInPlay))*40}px`);            //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
-    //         console.log(`top: ${(row)*40}px`);
-// }
 Player.prototype.dropBomb = function(){
     if(this.numberOfBombs > 0){
         console.log(`bombs: ${this.numberOfBombs}`)
@@ -475,48 +443,15 @@ Player.prototype.dropBomb = function(){
         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
         this.cooldown[timer + cooldownTime] = this.locationPair;
         this.bombsInPlay++;
-        // bombsInPlay++;
+        bombsInPlay++;
         this.bombs[timer+2] = bomb;
     }
 }
 Player.prototype.refreshCooldowns = function(){
-    // console.log(`${this.name} is refreshing`);
-    //find bomb that is going to explode
-    // console.log(bombs[timer]);
     if(this.bombs[timer]!== undefined){
         console.log(`found bomb to explode ${this.bombs[timer].locationPair}`);
         this.bombs[timer].explode();
     }
-
-
-    // if(this.cooldown[timer]!==undefined){
-    //     let row = this.cooldown[timer][0];
-    //     let col = this.cooldown[timer][1];
-
-    //     //find bomb that is going to explode
-    //     if(bombs[timer]!== undefined){
-    //         bombs[timer].explode;
-    //     }
-    //     //trigger the explosion;
-    //     // explode(row,col,'p1');
-    //     // explode(row-1,col,'p1');
-    //     // explode(row+1,col,'p1');
-    //     // explode(row+2,col,'p1');
-    //     // explode(row-2,col,'p1');
-    //     // explode(row,col-1,'p1');
-    //     // explode(row,col+1,'p1');
-    //     // explode(row,col-2,'p1');
-    //     // explode(row,col+2,'p1');
-    //     // $(`#r${row}c${col}`).remove();
-    //     // let bombID = `r${row}c${col}`;
-    //     // console.log(`Removing ${bombID}'s cooldown`);
-    //     // // $(`#${bombID}`).css('visibility', 'hidden');
-    //     // delete playerOneCooldowns[timer];
-    //     // playerOneBombs++;
-    //     // playerOneBombsInPlay--;
-    // }
-    
-    
 }
 Player.prototype.die = function(){
     console.log(`${this.name} died`);
@@ -526,6 +461,13 @@ Player.prototype.die = function(){
 
 
 
+
+
+
+
+
+
+// Gameplay
 
 
 
@@ -674,147 +616,6 @@ initializeIllegalLocation();
 
 
 
-// 14x14?
-// original
-// let initializeAllBombs = function(){
-//     for(let j = 0; j < playerTwoCol+1; ++j){
-//         for(let k = 0; k < playerTwoCol+1; ++k){
-//             $('.gamebox').append($('<div>',{
-//             class: 'gameBomb clearfix sphere',
-//             id: `r${j}c${k}`,
-//             }));
-//         }
-//     }
-    
-// }
-
-
-
-// let createBomb = function(row, col){
-//     let $bomb = $('<div>',{
-//                 class: 'game-bomb',
-//                 id: `r${row}c${col}`,
-//                 width: '40px',
-//                 height: '40px',
-//             });
-//             let $ground = $('<div>',{
-//                 class: 'game-ground',
-//             });
-//             let $homepage_bomb = $('<div>',{
-//                 class: 'game-homepage-bomb',
-//             });
-//             let $fuse = $('<div>',{
-//                 class: 'game-fuse',
-//             });
-//             let $spark = $('<div>',{
-//                 class: 'game-spark',
-//             });
-//             let $triangle_upTriangle = $('<div>',{
-//                 class: 'game-triangle game-upTriangle',
-//             });
-//             let $homepage_bomb_top = $('<div>',{
-//                 class: 'game-homepage-bomb-top',
-//             });
-//             let $sphereshadow = $('<span>',{
-//                 class: 'game-sphereshadow',
-//             });
-//             let $homepage_bomb_body_sphere = $('<div>',{
-//                 class: 'game-homepage-bomb-body sphere',
-//             });
-            
-
-//             // need to add to dom to manipulate location
-//             $('.gamebox').append($bomb);
-//             $bomb.append($ground);
-//             $ground.append($homepage_bomb);
-//             $homepage_bomb.append($fuse);
-//             $fuse.append($spark);
-//             $spark.append($triangle_upTriangle);
-//             $homepage_bomb.append($homepage_bomb_top);
-//             $homepage_bomb.append($sphereshadow);
-//             $homepage_bomb.append($homepage_bomb_body_sphere);
-
-
-
-//             // must account for previous gameboard appendings
-//             $($bomb).css('left', `${(col-(playerOneBombsInPlay))*40}px`);         //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
-//             $($bomb).css('top', `${(row)*40}px`);
-//             console.log(`left: ${(col-(playerOneBombsInPlay))*40}px`);            //subtract pairs(sub, #ofballsLeft): (1,2), (2,1), (3,1)
-//             console.log(`top: ${(row)*40}px`);
-// }
-
-// createBomb(3,4);
-
-// let moveBomb = function(id, row, col){
-//     let $bomb = $(`#${id}`);
-//     bomb.css('left','row');
-// }
-
-// with animations
-// let initializeAllBombs = function(){
-//     for(let j = 0; j < playerTwoCol+1; ++j){
-//         for(let k = 0; k < playerTwoCol+1; ++k){
-//             let $bomb = $('<div>',{
-//                 class: 'game-bomb',
-//                 id: `r${j}c${k}`,
-//                 width: '40px',
-//                 height: '40px',
-//             });
-//             let $ground = $('<div>',{
-//                 class: 'game-ground',
-//             });
-//             let $homepage_bomb = $('<div>',{
-//                 class: 'game-homepage-bomb',
-//             });
-//             let $fuse = $('<div>',{
-//                 class: 'game-fuse',
-//             });
-//             let $spark = $('<div>',{
-//                 class: 'game-spark',
-//             });
-//             let $triangle_upTriangle = $('<div>',{
-//                 class: 'game-triangle game-upTriangle',
-//             });
-//             let $homepage_bomb_top = $('<div>',{
-//                 class: 'game-homepage-bomb-top',
-//             });
-//             let $sphereshadow = $('<span>',{
-//                 class: 'game-sphereshadow',
-//             });
-//             let $homepage_bomb_body_sphere = $('<div>',{
-//                 class: 'game-homepage-bomb-body sphere',
-//             });
-            
-
-//             $('.gamebox').append($bomb);
-//             $bomb.append($ground);
-//             $ground.append($homepage_bomb);
-//             $homepage_bomb.append($fuse);
-//             $fuse.append($spark);
-//             $spark.append($triangle_upTriangle);
-//             $homepage_bomb.append($homepage_bomb_top);
-//             $homepage_bomb.append($sphereshadow);
-//             $homepage_bomb.append($homepage_bomb_body_sphere);
-
-            
-//         }
-//     }
-    
-// }
-// initializeAllBombs();
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -866,15 +667,6 @@ let putRandomObstaclesInGame = function(){
         
     }
 
-    // let rowObstacleKeys = Object.keys(rowObstacles);
-    // let colObstacleKeys = Object.keys(colObstacles);
-    // for(let j = 0; j < rowObstacleKeys.length; ++j){
-    //     for(let k = 0; k < colObstacleKeys.length; ++k){
-    //         makeObstacle(rowObstacleKeys[j],colObstacleKeys[k]);
-    //     }
-    // }
-
-
 }
 putRandomObstaclesInGame();
 
@@ -885,437 +677,6 @@ putRandomObstaclesInGame();
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//stop undoing here
-//here
-// at the moment only wall collisison detection works propperly
-// use objects to monitor player current position, so I can use this logic for monsters
-// right now player is a jquery dom object
-// let collisionRight = function(player){
-
-//     if(absoluteIllegalLocationsXAxis[parseInt(player.css('left'))+step]!==undefined){
-//         console.log(`collision detected from ${player.css('left')} wall ${absoluteIllegalLocationsXAxis[parseInt(player.css('left'))+step]}`)
-//         return true;
-//     }
-//     if(player.attr('id')==='p1'){
-//         let newCoordinates = [playerOneRow,playerOneCol+1];
-//         console.log(newCoordinates);
-//         if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-//         else if(newCoordinates[0]===playerTwoRow && newCoordinates[1]===playerTwoCol){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-//     }
-//     else{
-//         let newCoordinates = [playerTwoRow,playerTwoCol+1];
-//         if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-//         else if(newCoordinates[0]===playerOneRow && newCoordinates[1]===playerOneCol){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-        
-//     }
-    
-//     return false;
-// }
-// let collisionLeft = function(player){
-
-//     if(absoluteIllegalLocationsXAxis[parseInt(player.css('left'))]!==undefined){
-//         console.log(`collision detected at wall from ${player.css('left')} ${absoluteIllegalLocationsXAxis[parseInt(player.css('left'))]}`)
-//         return true;
-//     }
-//     if(player.attr('id')==='p1'){
-//         let newCoordinates = [playerOneRow,playerOneCol-1];
-//         if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-//         else if(newCoordinates[0]===playerTwoRow && newCoordinates[1]===playerTwoCol){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-//     }
-//     else{
-//         let newCoordinates = [playerTwoRow,playerTwoCol-1];
-//         if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-//         else if(newCoordinates[0]===playerOneRow && newCoordinates[1]===playerOneCol){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-//     }
-    
-//     return false;
-// }
-// let collisionUp = function(player){
- 
-//     if(absoluteIllegalLocationsYAxis[parseInt(player.css('top'))]!==undefined){
-//         console.log(`collision detected from ${player.css('top')} wall ${absoluteIllegalLocationsYAxis[parseInt(player.css('top'))]}`)
-//         return true;
-//     }
-//     if(player.attr('id')==='p1'){
-//         let newCoordinates = [playerOneRow-1,playerOneCol];
-//         if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-//         else if(newCoordinates[0]===playerTwoRow && newCoordinates[1]===playerTwoCol){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-//     }
-//     else{
-//         let newCoordinates = [playerTwoRow-1,playerTwoCol];
-//         if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-//         else if(newCoordinates[0]===playerOneRow && newCoordinates[1]===playerOneCol){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-//     }
-
-//     return false;
-// }
-// let collisionDown = function(player){
-
-//     if(absoluteIllegalLocationsYAxis[parseInt(player.css('top'))+step]!==undefined){
-//         console.log(`collision detected from ${player.css('top')} wall ${absoluteIllegalLocationsYAxis[parseInt(player.css('top'))+step]}`)
-//         return true;
-//     }
-//     if(player.attr('id')==='p1'){
-//         let newCoordinates = [playerOneRow+1,playerOneCol];
-//         if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-//         else if(newCoordinates[0]===playerTwoRow && newCoordinates[1]===playerTwoCol){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-//     }
-//     else{
-//         let newCoordinates = [playerTwoRow+1,playerTwoCol];
-//         if(ObstaclePairs[`${newCoordinates[0]},${newCoordinates[1]}`] !== undefined){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-//         else if(newCoordinates[0]===playerOneRow && newCoordinates[1]===playerOneCol){
-//             console.log(`collision detected`)
-//             return true;
-//         }
-//     }
-//     return false;
-// }
-
-
-
-// // at the moment does not work
-// let collisionHorizontal = function(player){
-//     if( collisionLeft(player) || collisionRight(player) ){
-//         return true;
-//     }
-//     return false;
-// }
-// let collisionVerticle = function(player){
-//     if(collisionDown(player) ||  collisionUp(player)){
-//         return true;
-//     }
-//     return false;
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // if players new x y coordinate is taken, cannot move
-// let stepRight = function(player){
-//     if(!collisionRight(player)){
-//         delete illegalLocationsXAxis[parseInt(player.css('left'))];
-//         player.css('left',parseInt(player.css('left'))+step);
-//         console.log(player.attr('id'));
-//         if(player.attr('id') === 'p1'){
-//             playerOneCol++;
-//         }
-//         else{
-//             playerTwoCol++;
-//         }
-//         illegalLocationsXAxis[parseInt(player.css('left'))] = parseInt(player.css('left'));
-//     }
-// }
-
-// let stepLeft = function(player){
-//     if(!collisionLeft(player)){
-//         delete illegalLocationsXAxis[parseInt(player.css('left'))];
-
-//         player.css('left',parseInt(player.css('left'))-step);
-//         if(player.attr('id') === 'p1'){
-//             playerOneCol--;
-//         }
-//         else{
-//             playerTwoCol--;
-//         }
-//         illegalLocationsXAxis[parseInt(player.css('left'))] = parseInt(player.css('left'));
-
-//     }
-// }
-
-// let stepDown = function(player){
-//     if(!collisionDown(player) ){
-//         delete illegalLocationsYAxis[parseInt(player.css('top'))];
-
-//         player.css('top',parseInt(player.css('top'))+step);
-//         if(player.attr('id') === 'p1'){
-//             playerOneRow++;
-//         }
-//         else{
-//             playerTwoRow++;
-//         }
-//         illegalLocationsYAxis[parseInt(player.css('top'))] = parseInt(player.css('top'));
-
-//     }
-// }
-
-// let stepUp = function(player){
-//     if(!collisionUp(player) ){
-//         delete illegalLocationsYAxis[parseInt(player.css('top'))];
-
-//         player.css('top',parseInt(player.css('top'))-step);
-//         if(player.attr('id') === 'p1'){
-//             playerOneRow--;
-//         }
-//         else{
-//             playerTwoRow--;
-//         }
-//         illegalLocationsYAxis[parseInt(player.css('top'))] = parseInt(player.css('top'));
-
-//     }
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// if div is already there
-// let dropBomb = function(player){
-//     //create a div bomb at player location absolute position
-    
-//     bombID = '';
-//     if(player.hasClass('p1') && playerOneBombs> 0){
-//         console.log('test');
-//         let rc = [playerOneRow,playerOneCol]
-//         let $bombID = `#r${rc[0]}c${rc[1]}`;
-//         // document.querySelector(`#${rc}`)
-//         console.log(`#${rc[0]}${rc[1]}`);
-//         $($bombID).css('visibility','visible');
-//         $($bombID).css('translateZ','1');
-//         let rcLeft = playerOneRow*playerWidth;
-//         let rcTop = playerOneRow*playerWidth;
-//         rowObstacles[rc[0]] = rc[0];
-//         colObstacles[rc[1]] = rc[1];
-//         playerOneBombs--;
-//         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
-//         playerOneCooldowns[timer + cooldownTime] = rc;
-//     }
-//     if(player.hasClass('p2') && playerTwoBombs > 0){
-//         console.log('test');
-//         let rc = [playerTwoRow,playerTwoCol]
-//         let $bombID = `#r${rc[0]}c${rc[1]}`;
-//         // document.querySelector(`#${rc}`)
-//         console.log(`#${rc[0]}${rc[1]}`);
-//         $($bombID).css('visibility','visible');
-//         $($bombID).css('translateZ','1');
-//         let rcLeft = playerTwoRow*playerWidth;
-//         let rcTop = playerTwoRow*playerWidth;
-//         rowObstacles[rc[0]] = rc[0];
-//         colObstacles[rc[1]] = rc[1];
-//         playerTwoBombs--;
-//         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
-//         playerTwoCooldowns[timer + cooldownTime] = rc;
-//     }
-    
-
-// }
-
-
-// let dropBomb = function(player){
-//     //create a div bomb at player location absolute position
-    
-//     bombID = '';
-//     if(player.hasClass('p1') && playerOneBombs> 0){
-//         console.log('test');
-//         let rc = [playerOneRow,playerOneCol]
-//         let $bombID = `#r${rc[0]}c${rc[1]}`;
-//         let $bomb = $($bombID);
-//         // document.querySelector(`#${rc}`)
-//         console.log($bombID);
-//         console.log($($bombID).css('visibility'));
-//         $bomb.css('visibility','visible');
-//         $bomb.css('translateZ','1');
-
-//         // $ground = $(`${$bomb} .game-ground`);
-//         // $ground.css('visibility', 'visible');
-
-//         // $game_homepage_bomb = $(`${$bomb} .game-ground .game-homepage-bomb`);
-//         // $game_homepage_bomb.css('visibility', 'visible');
-
-//         // $game_fuse = $(`${$bomb} .game-ground .game-homepage-bomb .game-fuse`);
-//         // $game_fuse.css('visibility', 'visible');
-
-//         // $game_spark = $(`${$bomb} .game-ground .game-homepage-bomb .game-fuse .game-spark`);
-//         // $game_spark.css('visibility', 'visible');
-
-//         // $game_triangle = $(`${$bomb} .game-ground .game-homepage-bomb .game-fuse .game-spark .game-triangle`);
-//         // $game_triangle.css('visibility', 'visible');
-
-//         // $game_upTriangle = $(`${$bomb} .game-ground .game-homepage-bomb .game-fuse .game-spark .game-upTriangle`);
-//         // $game_upTriangle.css('visibility', 'visible');
-
-
-//         // $game_homepage_bomb_top = $(`${$bomb} .game-ground .game-homepage-bomb .game-homepage-bomb-top`);
-//         // $game_homepage_bomb_top.css('visibility', 'visible');
-
-//         // $game_sphereshadow = $(`${$bomb} .game-ground .game-homepage-bomb .game-sphereshadow`);
-//         // $game_sphereshadow.css('visibility', 'visible');
-
-//         // $game_homepage_bomb_body = $(`${$bomb} .game-ground .game-homepage-bomb .game-homepage-bomb-body`);
-//         // $game_homepage_bomb_body.css('visibility', 'visible');
-
-//         // $sphere = $(`${$bomb} .game-ground .game-homepage-bomb .sphere`);
-//         // $sphere.css('visibility', 'visible');
-
-        
-
-//         let rcLeft = playerOneRow*playerWidth;
-//         let rcTop = playerOneRow*playerWidth;
-//         rowObstacles[rc[0]] = rc[0];
-//         colObstacles[rc[1]] = rc[1];
-//         playerOneBombs--;
-//         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
-//         playerOneCooldowns[timer + cooldownTime] = rc;
-//     }
-//     if(player.hasClass('p2') && playerTwoBombs > 0){
-//         console.log('test');
-//         let rc = [playerTwoRow,playerTwoCol]
-//         let $bombID = `#r${rc[0]}c${rc[1]}`;
-//         // document.querySelector(`#${rc}`)
-//         console.log(`#${rc[0]}${rc[1]}`);
-//         $($bombID).css('visibility','visible');
-//         $($bombID).css('translateZ','1');
-//         let rcLeft = playerTwoRow*playerWidth;
-//         let rcTop = playerTwoRow*playerWidth;
-//         rowObstacles[rc[0]] = rc[0];
-//         colObstacles[rc[1]] = rc[1];
-//         playerTwoBombs--;
-//         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
-//         playerTwoCooldowns[timer + cooldownTime] = rc;
-//     }
-    
-
-// }
-
-
-
-
-// switch player to class logic
-// let dropBomb = function(player){
-//     //create a div bomb at player location absolute position
-    
-//     bombID = '';
-//     if(player.hasClass('p1') && playerOneBombs> 0){
-//         let rc = [playerOneRow,playerOneCol]
-//         createBomb(rc[0],rc[1]);
-//         // rowObstacles[rc[0]] = rc[0];
-//         // colObstacles[rc[1]] = rc[1];
-//         ObstaclePairs[`${rc[0],rc[1]}`] = [rc];
-//         playerOneBombs--;
-//         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
-//         playerOneCooldowns[timer + cooldownTime] = rc;
-//         playerOneBombsInPlay++;
-//     }
-//     if(player.hasClass('p2') && playerTwoBombs> 0){
-//         let rc = [playerTwoRow,playerTwoCol]
-//         createBomb(rc[0],rc[1]);
-//         // rowObstacles[rc[0]] = rc[0];
-//         // colObstacles[rc[1]] = rc[1];
-//         ObstaclePairs[`${rc[0],rc[1]}`] = [rc]
-//         playerTwoBombs--;
-//         timer++;   //to ensure multiple bombs dont line up on the same cooldown time
-//         playerTwoCooldowns[timer + cooldownTime] = rc;
-//         playerTwoBombsInPlay++;
-//     }
-// }
 
 
 
@@ -1344,7 +705,6 @@ document.addEventListener('keyup',function (event){
     if(event.key==='x'){
         // dropBomb($('.p1'));
         playerOne.dropBomb();
-        ++bombsInPlay;
     }
 
     //player two controls
@@ -1367,7 +727,6 @@ document.addEventListener('keyup',function (event){
     if(event.key==='l'){
         // dropBomb($('.p2'));
         playerTwo.dropBomb();
-        bombsInPlay++;
     }
 });
 
@@ -1381,178 +740,44 @@ document.addEventListener('keyup',function (event){
 
 
 
-
-// axis should be a string: x or y
-//row and col should be numbers.
-// allow wraparound?
-//explode for original 
-// let explode = function(row, col){
-//     // getPixleOriginFromRowAndCol(row, col);
-    
-
-//     console.log('boom');
-//     delete colObstacles[col];
-//     delete rowObstacles[row];
-//     let $bombID = $(`#r${row}c${col}`);
-//     $bombID.css('background','white');
-//     $bombID.css('visibility','visible');
-//     $bombID.css('color','black');
-//     $bombID.text('x');
-//     $bombID.css('font-size','33px');
-
-//     //if player is in blast radius you win
-//     if(playerTwoRow === row && playerTwoCol === col){
-//         console.log('Player One Wins!!!')
-//         $('#p2').remove();
-        
-//     }
-//     if(playerOneRow === row && playerOneCol === col){
-//         console.log('Player Two Wins!!!')
-//         $('#p1').remove();
-        
-//     }
-
-//     setTimeout(function(){$($bombID).css('visibility', 'hidden');},1000);  //delay clear for a second
-// }
-
-
-// explode for animation
-// first is correct, rest is not
-// let explode = function(row, col, playerName){
-    
-//     console.log('boom');
-//     console.log(`blowing up r${row}c${col}`);
-//     // delete colObstacles[col];
-//     // delete rowObstacles[row];
-//     delete ObstaclePairs[`${row},${col}`];
-//     $(`#obstacler${row}c${col}`).remove();
-//     //create a div for the object and append to the row and col
-//     let $explodeCell = $('<div>',{
-//         id: `explosionr${row}c${col}`,
-//         class: 'explosion',
-//     });
-
-//     // destroy obstacles
-//     // is destroying more than what is required I wont use this
-//     // if(rowObstacles[row] !== undefined && colObstacles[col] !== undefined){
-//     //     $(`#obstacler${row}c${col}`).remove();
-//     // }
-
-//     // need to add to dom to manipulate location
-//     $('.gamebox').append($explodeCell);
-//     $explodeCell = $(`#explosionr${row}c${col}`);
-//     $explodeCell.css('left', `${(col)*40}px`);
-//     $explodeCell.css('top', `${(row)*40}px`);
-//     $explodeCell.text('x');
-//     //if player is in blast radius you win
-//     // if(playerName === 'p1'){
-//     //     playerOneBombsInPlay--;
-//     // }
-//     // else{
-//     //     playerTwoBombsInPlay--;
-//     // }
-//     if(playerTwoRow === row && playerTwoCol === col){
-//         console.log('Player One Wins!!!')
-//         $('#p2').remove();
-        
-//     }
-//     if(playerOneRow === row && playerOneCol === col){
-//         console.log('Player Two Wins!!!')
-//         $('#p1').remove();
-        
-//     }
-
-//     setTimeout(function(){$explodeCell.remove();},1000);  //delay clear for a second
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// let refreshCooldowns = function(){
-//     if(playerOneCooldowns[timer]!==undefined){
-//         let row = playerOneCooldowns[timer][0];
-//         let col = playerOneCooldowns[timer][1];
-//         explode(row,col,'p1');
-//         explode(row-1,col,'p1');
-//         explode(row+1,col,'p1');
-//         explode(row+2,col,'p1');
-//         explode(row-2,col,'p1');
-//         explode(row,col-1,'p1');
-//         explode(row,col+1,'p1');
-//         explode(row,col-2,'p1');
-//         explode(row,col+2,'p1');
-//         $(`#r${row}c${col}`).remove();
-//         let bombID = `r${row}c${col}`;
-//         console.log(`Removing ${bombID}'s cooldown`);
-//         // $(`#${bombID}`).css('visibility', 'hidden');
-//         delete playerOneCooldowns[timer];
-//         playerOneBombs++;
-//         playerOneBombsInPlay--;
-//     }
-//     if(playerTwoCooldowns[timer]!==undefined){
-//         if(playerTwoCooldowns[timer]!==undefined){
-//         let row = playerTwoCooldowns[timer][0];
-//         let col = playerTwoCooldowns[timer][1];
-//         explode(row,col,'p2');
-//         explode(row-1,col,'p2');
-//         explode(row+1,col,'p2');
-//         explode(row+2,col,'p2');
-//         explode(row-2,col,'p2');
-//         explode(row,col-1,'p2');
-//         explode(row,col+1,'p2');
-//         explode(row,col-2,'p2');
-//         explode(row,col+2,'p2');
-//         $(`#r${row}c${col}`).remove();
-//         let bombID = `r${row}c${col}`;
-//         console.log(`Removing ${bombID}'s cooldown`);
-//         // $(`#${bombID}`).css('visibility', 'hidden');
-//         delete playerTwoCooldowns[timer];
-//         playerTwoBombs++;
-//         playerTwoBombsInPlay--;
-//     }
-//     }
-// }
-
-
-
-
-
-
-
-
-
 let checkTime = function(){
     //end is 300,000ms = 5min
     //1000*60*5
-    for(let j = 0; j*1000 < timeLimit;++j){
-        let timeoutID = setTimeout(function(){
-        //    console.log(timeoutID);
-            //monitor bomb stuff
+    // for(let j = 0; j*1000 < timeLimit;++j){
+    //     let timeoutID = setInterval(function(){
+    //     //    console.log(timeoutID);
+    //         //monitor bomb stuff
             
-            bombsInPlay = 0;
-            playerOne.refreshCooldowns();
-            playerTwo.refreshCooldowns();
-            let monsterKeys = Object.keys(monsters);
-            for(let j = 0; j < monsterKeys.length; ++j){
-                monsters[monsterKeys[j]].randomMove();
-                monsters[monsterKeys[j]].refreshCooldowns();
-            }
-            timer++;
-            console.log(timer);
-        }, j*1000);//increase the timer every second
-    }
+    //         bombsInPlay = 0;
+    //         playerOne.refreshCooldowns();
+    //         playerTwo.refreshCooldowns();
+    //         let monsterKeys = Object.keys(monsters);
+    //         for(let j = 0; j < monsterKeys.length; ++j){
+    //             monsters[monsterKeys[j]].randomMove();
+    //             monsters[monsterKeys[j]].refreshCooldowns();
+    //         }
+    //         timer++;
+    //         console.log(timer);
+    //     }, j*1000);//increase the timer every second
+    // }
+    let id = setInterval(()=>{
+        
+        if(timer > 180){
+            clearInterval(id);
+        }
+        //actions
+        console.log(timer);
+        playerOne.refreshCooldowns();
+        playerTwo.refreshCooldowns();
+        // let monsterKeys = Object.keys(monsters);
+        // for(let j = 0; j < monsterKeys.length; ++j){
+        //     monsters[monsterKeys[j]].randomMove();
+        //     monsters[monsterKeys[j]].refreshCooldowns();
+        // }
+
+        timer++;
+    }, 1000)
+    //stop execution
+    // clearInterval(id);
 }
 checkTime();
